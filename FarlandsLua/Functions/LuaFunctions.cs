@@ -33,7 +33,7 @@ using Debug = UnityEngine.Debug;
 namespace FarlandsCoreMod.FarlandsLua.Functions
 {
     /// <summary>
-    /// ----------------------------------------------------------------------
+    /// ***----------------------------------------------------------------------***
     /// **public static class LuaFunctions** donde guardamos las funciones LUA   
     /// .  
     /// </summary>
@@ -45,7 +45,14 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
             #region Define Functions
 
             /// <summary>
-            /// TODO: hacer
+            /// ***----------------------------------------------------------------------***
+            /// Reserva e identifica un MOD en LUA  
+            /// > Guarda en code el nombre del MOD y sus eventos  
+            /// > lo ejecuta  
+            /// > guarda la direccion del archivo de configuracion  
+            /// > lo añade a la lista de MODs  
+            /// > (Puede, Revisar)  
+            /// .  
             /// </summary>
             /// <param name="tag">Nombre/Identificador del MOD</param>
             public static void MOD(string tag)
