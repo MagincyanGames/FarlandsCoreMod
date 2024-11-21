@@ -33,8 +33,9 @@ using Debug = UnityEngine.Debug;
 namespace FarlandsCoreMod.FarlandsLua.Functions
 {
     /// <summary>
-    /// **Clase** donde guardamos las funciones LUA   
-    /// > ME CAGO EN MI PUTA VIDA 
+    /// ***----------------------------------------------------------------------***
+    /// **public static class LuaFunctions** donde guardamos las funciones LUA   
+    /// .  
     /// </summary>
     public static class LuaFunctions
     {
@@ -66,7 +67,14 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
         public static class GlobalFunctions
         {
             /// <summary>
-            /// TODO: hacer
+            /// ***----------------------------------------------------------------------***
+            /// Reserva e identifica un MOD en LUA  
+            /// > Guarda en code el nombre del MOD y sus eventos  
+            /// > lo ejecuta  
+            /// > guarda la direccion del archivo de configuracion  
+            /// > lo añade a la lista de MODs  
+            /// > (Puede, Revisar)  
+            /// .  
             /// </summary>
             /// <param name="tag">Nombre/Identificador del MOD</param>
             public static void MOD(string tag)
@@ -689,6 +697,13 @@ end
                 this.path = path;
             }
         }
+
+
+        /// <summary>
+        /// UNA DE LOS METODOS MAS IMPORTANTES:  
+        /// Se encarga de meter todas las funciones en LUA  
+        /// > TODO: explicar el preceso  
+        /// </summary>
         public static void AddToLua()
         {
             mathsFuncions();
