@@ -61,6 +61,26 @@ namespace FarlandsCoreMod.Properties {
         }
         
         /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Byte[].
+        /// </summary>
+        public static byte[] fcm {
+            get {
+                object obj = ResourceManager.GetObject("fcm", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Byte[].
+        /// </summary>
+        public static byte[] fcm_scenes {
+            get {
+                object obj = ResourceManager.GetObject("fcm_scenes", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a 0.1.3.
         /// </summary>
         public static string Version {

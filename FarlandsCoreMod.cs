@@ -7,6 +7,7 @@ using Farlands.PlaceableObjectsSystem;
 using FarlandsCoreMod.Attributes;
 using FarlandsCoreMod.Patchers;
 using FarlandsCoreMod.Utiles;
+using FarlandsCoreMod.Utiles.Assets;
 using FarlandsCoreMod.Utiles.Loaders;
 using FMOD.Studio;
 using HarmonyLib;
@@ -38,8 +39,14 @@ namespace FarlandsCoreMod
         public static List<FarlandsMod> ModList = new();
         public string SHORT_NAME => "FCM";
 
+        private AssetBundle fcm_assets;
+        private BundleScene fcm_scenes;
+
         private void Awake()
         {
+            fcm_assets = AssetBundle.LoadFromMemory(Properties.Resources.fcm);
+            fcm_scenes = new BundleScene(Properties.Resources.fcm_scenes);
+            fcm_scenes.LoadScene("LoaddingScene");
 
             instance = this;
 
@@ -60,7 +67,7 @@ namespace FarlandsCoreMod
             StartCoroutine(allLoaded());
         }
 
-        private void LoadManagers()
+        private IEnumerator LoadManagers()
         {
             var managers = Assembly.GetAssembly(this.GetType())
                 .GetTypes().Where(x => typeof(IManager).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract)
@@ -69,41 +76,46 @@ namespace FarlandsCoreMod
 
             IComparer<IManager> comparer = Comparer<IManager>.Create((x,y)=>x.Index.CompareTo(y.Index));
             managers.Sort(comparer);
-            managers.ForEach(m =>
+
+            foreach (var m in managers)
             {
                 Debug.Log("MANAGER " + m.GetType().Name + " LOADDING");
                 if (m is IManagerASM imasm) imasm.SetASM(ModList.Select(m => m.ASM));
                 m.Init();
-            });
+                yield return null;
+            }
         }
 
         private static bool isLoaded = false;
         private IEnumerator allLoaded()
         {
             yield return new WaitForEndOfFrame();
-            OnAllModsLoaded();
-            LoadManagers();
-
+            yield return StartCoroutine(OnAllModsLoaded());
+            yield return LoadManagers();
+            yield return SceneManager.LoadSceneAsync("PreloadScene");
             isLoaded = true;
         }
 
         public static bool IsAllLoaded() => isLoaded;
         public static ConfigEntry<T> AddConfig<T>(string section, string key, string description, T defaultValue) =>
             instance.Config.Bind(section, key, defaultValue, description);
-        private void OnAllModsLoaded()
+        private IEnumerator OnAllModsLoaded()
         {
             Logger.LogMessage("************************");
             var target = "top.magincian.fcm";
 
-            UnityChainloader.Instance.Plugins.Values
-                .Where(p => p.Dependencies.Any(d => d.DependencyGUID == target))
-                .ToList()
-                .ForEach(p =>
+            foreach(var plugin in UnityChainloader.Instance.Plugins.Values)
+            {
+                if (plugin.Dependencies.Any(d => d.DependencyGUID == target))
                 {
-                    Logger.LogMessage($"{p.Metadata.GUID}: {p.Metadata.Version}");
-                });
+                    Logger.LogMessage($"{plugin.Metadata.GUID}: {plugin.Metadata.Version}");
+
+                }
+                yield return null;
+            }
 
             Logger.LogMessage("************************");
+            yield return null;
         }
     }
 }
