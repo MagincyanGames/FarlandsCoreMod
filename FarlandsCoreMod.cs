@@ -45,11 +45,18 @@ namespace FarlandsCoreMod
             // JanduSoft.Singleton<JSManager>.Instance.sceneToLoad = SceneUtility.GetScenePathByBuildIndex();
         }
 
+        private BundleAsset fcm_assets;
+        private BundleScene fcm_scenes;
         private void Awake()
-        {
+        { 
+            fcm_assets = new BundleAsset(Properties.Resources.fcm);
+            fcm_scenes = new BundleScene(Properties.Resources.fcm_scenes);
+
             instance = this;
 
-            
+            fcm_scenes.Load();
+            fcm_assets.Load();
+            fcm_scenes.LoadScene("LoaddingScene");
 
             this.gameObject.AddComponent<Terminal>();
 
@@ -94,6 +101,10 @@ namespace FarlandsCoreMod
             yield return StartCoroutine(OnAllModsLoaded());
             yield return LoadManagers();
             yield return SceneManager.LoadSceneAsync("PreloadScene");
+
+            fcm_scenes.Unload();
+            fcm_assets.Unload();
+            
             isLoaded = true;
         }
 

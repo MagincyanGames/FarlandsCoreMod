@@ -125,6 +125,8 @@ namespace FarlandsCoreMod.FarlandsLua
             var src = Directory.GetFiles(Paths.Plugin, "*.zip");
 
             src.ToList().ForEach(FarlandsEasyMod.LoadAndAddZip);
+
+            Directory.GetDirectories(Paths.Plugin).ToList().ForEach(FarlandsEasyMod.LoadAndAddFolder);
         }
 
         /// <summary>

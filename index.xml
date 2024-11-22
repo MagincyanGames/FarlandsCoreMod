@@ -66,6 +66,13 @@
             </summary>
             <param name="zipPath">Direccion donde eta el zip</param>
         </member>
+        <member name="M:FarlandsCoreMod.FarlandsLua.FarlandsEasyMod.LoadAndAddFolder(System.String)">
+            <summary>
+                Carga un archivo ZIP, crea una instancia de <see cref="T:FarlandsCoreMod.FarlandsLua.FarlandsEasyMod"/> y ejecuta el archivo main.lua.
+                Abvertencias: CIUDADO
+            </summary>
+            <param name="zipPath">Direccion donde eta el zip</param>
+        </member>
         <member name="P:FarlandsCoreMod.FarlandsLua.FarlandsEasyMod.Item(System.String)">
             <summary>
                 Getters y Setters de PathValue

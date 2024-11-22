@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommandTerminal;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -20,6 +21,7 @@ namespace FarlandsCoreMod.Utiles.Assets
         {
             foreach (var scn in bundle.GetAllScenePaths())
             {
+                Debug.Log(scn);
                 if(Path.GetFileNameWithoutExtension(scn) == scene)
                     return scn;
             }

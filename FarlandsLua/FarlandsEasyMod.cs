@@ -94,7 +94,7 @@ namespace FarlandsCoreMod.FarlandsLua
         public void LoadFolder(string path, string acumPath = "")
         {
             foreach (var file in Directory.EnumerateFiles(path))
-                PathValue[Path.Combine(acumPath, file)] = File.ReadAllBytes(file);
+                PathValue[Path.Combine(acumPath, Path.GetFileName(file))] = File.ReadAllBytes(file);
 
             foreach (var dir in Directory.EnumerateDirectories(path))
                 LoadFolder(Path.Combine(path, dir), Path.Combine(path, acumPath));
@@ -115,7 +115,12 @@ namespace FarlandsCoreMod.FarlandsLua
             return fem;
         }
 
-
+        public static FarlandsEasyMod FromFolder(string folderPath)
+        {
+            var fem = new FarlandsEasyMod();
+            fem.LoadFolder(folderPath);
+            return fem;
+        }
         /// <summary>
         ///     Carga un archivo ZIP, crea una instancia de <see cref="FarlandsEasyMod"/> y ejecuta el archivo main.lua.
         ///     Abvertencias: CIUDADO
@@ -127,6 +132,19 @@ namespace FarlandsCoreMod.FarlandsLua
             LuaManager.CURRENT_MOD = fem;
             fem.ExecuteMain();
         }
+
+        /// <summary>
+        ///     Carga un archivo ZIP, crea una instancia de <see cref="FarlandsEasyMod"/> y ejecuta el archivo main.lua.
+        ///     Abvertencias: CIUDADO
+        /// </summary>
+        /// <param name="zipPath">Direccion donde eta el zip</param>
+        public static void LoadAndAddFolder(string path)
+        {
+            var fem = FromFolder(path);
+            LuaManager.CURRENT_MOD = fem;
+            fem.ExecuteMain();
+        }
+
 
 
         /// <summary>
@@ -158,9 +176,13 @@ namespace FarlandsCoreMod.FarlandsLua
         /// </summary>
         public void ExecuteMain()
         {
-            LuaManager.Execute(this["main.lua"], this);
-            Mod = LuaManager.MOD;
-            Tag = Mod.Table.Get("tag").String;
+            if (this.PathValue.ContainsKey("main.lua"))
+            {
+                LuaManager.Execute(this["main.lua"], this);
+                Mod = LuaManager.MOD;
+                Tag = Mod.Table.Get("tag").String;
+            }
         }
+
     }
 }
