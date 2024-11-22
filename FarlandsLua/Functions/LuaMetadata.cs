@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Unity.VisualScripting;
+using UnityEngine;
 
 namespace FarlandsCoreMod.FarlandsLua.Functions
 {
@@ -21,6 +22,7 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
             metadata = new();
             Add(new() { type = LuaMetadata.Type.META, values = "farlands" });
             ClassObjectMetadata();
+            ClassGameObjectMetadata();
         }
 
         public enum Type
@@ -85,10 +87,16 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
         });
         private static string CSharpTypeToLuaMetadata(System.Type type)
         {
+            if (typeof(DynValueGameObject).IsAssignableFrom(type)) return "GameObject";
             if (typeof(DynValue).IsAssignableFrom(type)) return "any";
             if (typeof(int).IsAssignableFrom(type)) return "integer";
             if (typeof(float).IsAssignableFrom(type)) return "number";
             if (typeof(string).IsAssignableFrom(type)) return "string";
+            if (typeof(LuaFunctions.Optional<>).IsAssignableFrom(type))
+            {
+                var t = CSharpTypeToLuaMetadata(type.GenericTypeArguments[0]); // solo tiene un argumento genérico
+                return $"undefined | {t}";
+            }
             if (type.IsArray)
             {
                 var elementType = CSharpTypeToLuaMetadata(type.GetElementType());
@@ -100,15 +108,46 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
                 var elementType = CSharpTypeToLuaMetadata(genericType);
                 return elementType + "[]";
             }
-            if (typeof(object).IsAssignableFrom(type)) return "object";
-            return "object";
+
+            return "any";
         }
         private void ClassObjectMetadata()
         {
-            AddClass("object");
+            AddClass("Object");
             AddFieldFun("get", "key:string", typeof(DynValue));
             AddFieldFun("set", "key:string, value:any", typeof(DynValue));
+            AddFieldFun("call", "function:string, value:any", typeof(DynValue));
         }
+
+        private void ClassGameObjectMetadata()
+        {
+            AddClass("GameObject");
+            AddFieldFun("get", "key:string", typeof(DynValue));
+            AddFieldFun("set", "key:string, value:any", typeof(DynValue));
+            AddFieldFun("call", "function:string, value:any", typeof(DynValue));
+
+            AddFieldFun("get_name", "", typeof(string));
+
+            AddFieldFun("get_position", "", typeof(DynValue)); // TODO cambiar este any por DynValue
+            AddFieldFun("set_position", "pos:any", typeof(DynValue)); // TODO cambiar este any por vector3
+            AddFieldFun("add_position", "pos:any", typeof(DynValue)); // TODO cambiar este any por vector3
+
+            AddFieldFun("set_scale", "scale:any", typeof(DynValue)); // TODO cambiar este any por vector3
+
+            AddFieldFun("toggle_active", "", typeof(void));
+
+            AddFieldFun("get_layer", "", typeof(int));
+
+            AddFieldFun("set_layer", "id:integer", typeof(int));
+
+            AddFieldFun("set_update", "f:function", typeof(void));
+            AddFieldFun("set_start", "f:function", typeof(void));
+
+            // TODO agregar los componentes
+
+
+        }
+
         public override string ToString()
         {
             return string.Join("\n", metadata.Select(x => x.ToString()));

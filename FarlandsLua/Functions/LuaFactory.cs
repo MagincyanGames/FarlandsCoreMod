@@ -29,6 +29,7 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
         // private static DynValue startFunction;
 
 
+
         /* Componentes y/o propiedades que se pueden acceder
          * Escribir/Editar
          * Leer
@@ -37,7 +38,7 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
         public static DynValue FromObject(object @object)
         {
             DynValue result = DynValue.NewTable(new Table(LuaManager.LUA));
-
+            result.Table.Set("type", DynValue.NewString("Object"));
             result.Table.Set("get", DynValue.NewCallback((ctx, args) =>
             {
                 // TODO
@@ -193,13 +194,13 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
 
             return false;
         }
-        public static DynValue FromGameObject(GameObject gameObject)
+        public static DynValueGameObject FromGameObject(GameObject gameObject)
         {
             if (gameObject == null)
-                return DynValue.Nil;
+                return DynValueGameObject.Nil;
 
             DynValue result = FromObject(gameObject);
-
+            result.Table.Set("type", DynValue.NewString("GameObject"));
             // Sirve para obtener el nombre del GameObject
             result.Table.Set("get_name", DynValue.NewCallback((ctx, args) =>
             {
@@ -378,7 +379,7 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
                 return DynValue.Void;
             }));
 
-            return result;
+            return new DynValueGameObject(result);
         }
 
         

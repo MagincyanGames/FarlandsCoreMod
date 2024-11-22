@@ -39,6 +39,16 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
     /// </summary>
     public static class LuaFunctions
     {
+        public class Optional<T>
+        {
+            public T Value;
+
+            public Optional(T value)
+            {
+                Value = value;
+            }
+        }
+
         [Functions("scenes")]
         public static class FunctionsScenes
         {
@@ -297,9 +307,9 @@ end
             /// te da un objeto dada la ruta de los objetos  
             /// </summary>
             /// <param name="args">ruta en gameObject</param>
-            public static DynValue get_object(List<DynValue>  args)
+            public static DynValueGameObject get_object(List<DynValue>  args)
             {
-                if (args.Count() < 1) return DynValue.Nil;
+                if (args.Count() < 1) return DynValueGameObject.Nil;
 
                 var scene = SceneManager.GetActiveScene();
                 GameObject previous = null;
@@ -325,7 +335,7 @@ end
                         }
                     }
                 }
-                if (notFound) return DynValue.Nil;
+                if (notFound) return DynValueGameObject.Nil;
                 return LuaFactory.FromGameObject(previous);
             }
 
@@ -333,9 +343,9 @@ end
             /// Te busca un gameObject en la escena por el nombre (cuidado con objeton con el mismo nombre)  
             /// </summary>
             /// <param name="args">nombre del objeto</param>
-            public static DynValue find_object(string name, string scene)
+            public static DynValueGameObject find_object(string name, Optional<string> scene)
             {
-                if (name == null) return DynValue.Nil;
+                if (name == null) return DynValueGameObject.Nil;
 
                 if (scene == null)
                 {
@@ -343,7 +353,7 @@ end
                     return LuaFactory.FromGameObject(go);
                 }
 
-                var gameObject = GetAllGameObjectsInScene(SceneManager.GetSceneByName(scene)).First(x => x.name == name);
+                var gameObject = GetAllGameObjectsInScene(SceneManager.GetSceneByName(scene.Value)).First(x => x.name == name);
                 return LuaFactory.FromGameObject(gameObject);
             }
 
@@ -742,7 +752,7 @@ end
                         }).ToList();
                         if (parent == "")
                         {
-                            if(typeof(void).IsAssignableFrom(m.ReturnType)) metadata.AddReturn(m.ReturnType);
+                            if(!typeof(void).IsAssignableFrom(m.ReturnType)) metadata.AddReturn(m.ReturnType);
                             metadata.AddFunction(m.Name, string.Join(',', m.GetParameters().Select(p=>p.Name)));
                         }
                         else

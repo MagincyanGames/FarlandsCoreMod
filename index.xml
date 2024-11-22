@@ -90,17 +90,27 @@
         </member>
         <member name="T:FarlandsCoreMod.FarlandsLua.Functions.LuaFunctions">
             <summary>
-            **public static class LuaFunctions** donde guardamos las funciones LUA  
+            ***----------------------------------------------------------------------***
+            **public static class LuaFunctions** donde guardamos las funciones LUA   
+            .  
+            </summary>
+        </member>
+        <member name="M:FarlandsCoreMod.FarlandsLua.Functions.LuaFunctions.FunctionsScenes.load_scene(MoonSharp.Interpreter.DynValue)">
+            <summary>
+            Carga la escena especificada por nombre o índice.  
+            <param name="scene">puede ser el nombre o indice</param>
             </summary>
         </member>
         <member name="M:FarlandsCoreMod.FarlandsLua.Functions.LuaFunctions.GlobalFunctions.MOD(System.String)">
             <summary>
+            ***----------------------------------------------------------------------***
             Reserva e identifica un MOD en LUA  
             > Guarda en code el nombre del MOD y sus eventos  
             > lo ejecuta  
             > guarda la direccion del archivo de configuracion  
             > lo añade a la lista de MODs  
             > (Puede, Revisar)  
+            .  
             </summary>
             <param name="tag">Nombre/Identificador del MOD</param>
         </member>
@@ -196,7 +206,7 @@
             </summary>
             <param name="args">ruta en gameObject</param>
         </member>
-        <member name="M:FarlandsCoreMod.FarlandsLua.Functions.LuaFunctions.GlobalFunctions.find_object(System.String,System.String)">
+        <member name="M:FarlandsCoreMod.FarlandsLua.Functions.LuaFunctions.GlobalFunctions.find_object(System.String,FarlandsCoreMod.FarlandsLua.Functions.LuaFunctions.Optional{System.String})">
             <summary>
             Te busca un gameObject en la escena por el nombre (cuidado con objeton con el mismo nombre)  
             </summary>

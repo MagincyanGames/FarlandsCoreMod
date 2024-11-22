@@ -42,6 +42,13 @@ namespace FarlandsCoreMod.FarlandsLua
         /// </summary>
         public ConfigFile ConfigFile;
 
+        private bool validFile(string file)
+        {
+            return !file.Contains("unused") && 
+                !file.Contains("depricated") && 
+                !file.EndsWith(".old") && 
+                !file.EndsWith("metadata.lua");
+        }
 
         //TODO que se puedan leer carpetas
         /// <summary>
@@ -68,6 +75,8 @@ namespace FarlandsCoreMod.FarlandsLua
 
                             // Guardar el contenido en el diccionario
                             UnityEngine.Debug.Log(entry.FullName);
+
+                            if(validFile(entry.Name))
                             PathValue[entry.FullName] = ms.ToArray();
                         }
                     }

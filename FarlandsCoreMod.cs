@@ -11,6 +11,7 @@ using FarlandsCoreMod.Utiles.Assets;
 using FarlandsCoreMod.Utiles.Loaders;
 using FMOD.Studio;
 using HarmonyLib;
+using JanduSoft;
 using PixelCrushers.DialogueSystem;
 using System;
 using System.Collections;
@@ -39,16 +40,16 @@ namespace FarlandsCoreMod
         public static List<FarlandsMod> ModList = new();
         public string SHORT_NAME => "FCM";
 
-        private AssetBundle fcm_assets;
-        private BundleScene fcm_scenes;
+        private void prepareLoadding()
+        {
+            // JanduSoft.Singleton<JSManager>.Instance.sceneToLoad = SceneUtility.GetScenePathByBuildIndex();
+        }
 
         private void Awake()
         {
-            fcm_assets = AssetBundle.LoadFromMemory(Properties.Resources.fcm);
-            fcm_scenes = new BundleScene(Properties.Resources.fcm_scenes);
-            fcm_scenes.LoadScene("LoaddingScene");
-
             instance = this;
+
+            
 
             this.gameObject.AddComponent<Terminal>();
 
