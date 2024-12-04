@@ -92,10 +92,16 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
             if (typeof(int).IsAssignableFrom(type)) return "integer";
             if (typeof(float).IsAssignableFrom(type)) return "number";
             if (typeof(string).IsAssignableFrom(type)) return "string";
-            if (typeof(LuaFunctions.Optional<>).IsAssignableFrom(type))
+            if (typeof(Optional<>).IsAssignableFrom(type))
             {
                 var t = CSharpTypeToLuaMetadata(type.GenericTypeArguments[0]); // solo tiene un argumento genérico
                 return $"undefined | {t}";
+            }
+            if (typeof(Both<,>).IsAssignableFrom(type))
+            {
+                var t = CSharpTypeToLuaMetadata(type.GenericTypeArguments[0]);
+                var k = CSharpTypeToLuaMetadata(type.GenericTypeArguments[1]);
+                return $"{t} | {k}";
             }
             if (type.IsArray)
             {
@@ -152,5 +158,33 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
         {
             return string.Join("\n", metadata.Select(x => x.ToString()));
         }
+    }
+
+    public class Optional<T>
+    {
+        public T Value;
+        public bool IsNull => Value == null;
+        public bool IsValue => Value != null;
+
+        public Optional(T value)
+        {
+            Value = value;
+        }
+    }
+
+    public class Both<T, K>
+    {
+        public object Value;
+
+        public bool IsT;
+
+        public Both(object val)
+        {
+            Value = val;
+            IsT = val is T;
+        }
+
+        public T GetT() => (T) Value;
+        public K GetK() => (K) Value;
     }
 }

@@ -39,15 +39,7 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
     /// </summary>
     public static class LuaFunctions
     {
-        public class Optional<T>
-        {
-            public T Value;
-
-            public Optional(T value)
-            {
-                Value = value;
-            }
-        }
+        
 
         [Functions("scenes")]
         public static class FunctionsScenes

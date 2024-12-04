@@ -24,6 +24,10 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
 {
     public static class LuaFactory
     {
+        [AttributeUsage(AttributeTargets.Method | AttributeTargets.Field)]
+        public class IgnoreFactory : Attribute
+        { 
+        }
         // ------------------- Variables ------------------- //
         // private static DynValue updateFunction;
         // private static DynValue startFunction;
@@ -123,7 +127,7 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
             return result;
         }
 
-        public static DynValue FromComponent(Component component)
+        public static DynValueComponent FromComponent(Component component)
         {
             DynValue result = FromObject(component);
 
@@ -168,7 +172,7 @@ namespace FarlandsCoreMod.FarlandsLua.Functions
                 }));
             }
             
-            return result;
+            return new DynValueComponent(result);
         }
 
         private static bool ObjectSet(object obj, string name, DynValue value, bool isPublic)

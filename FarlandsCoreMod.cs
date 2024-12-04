@@ -42,6 +42,7 @@ namespace FarlandsCoreMod
 
         private void prepareLoadding()
         {
+            
             // JanduSoft.Singleton<JSManager>.Instance.sceneToLoad = SceneUtility.GetScenePathByBuildIndex();
         }
 
