@@ -1,0 +1,120 @@
+classDiagram
+    class FarlandsTemporalData {
+        <<GameObject>>
+
+    }
+    
+    FarlandsTemporalData o-- "1" ScriptableObjectsDB
+    class ScriptableObjectsDB {
+        <<Component>>
+        +GetInventoryItem(ID)  InventoryItem
+        +getWorlResourceData(ID) WorldResources
+        +getPlantData(ID) PlantScriptableObject
+        +getPlaceablesData(ID) ScriptableObject
+        +getWorldTreeData(ID) WorldTreesSaveData
+    }
+
+    ScriptableObjectsDB o-- "1" ArcaItemsDB
+    ScriptableObjectsDB o-- "*" InventoryItem
+    ScriptableObjectsDB o-- "*" PlantScriptableObject
+    ScriptableObjectsDB o-- "*" PlaceableScriptableObject
+    ScriptableObjectsDB o-- "*" WorldResources
+    ScriptableObjectsDB o-- "*" WorldTreesSaveData
+
+    class ArcaItemsDB {
+        <<Class>>
+        
+    }
+    ArcaItemsDB
+    class InventoryItem {
+        <<ScriptableObject>>
+        int itemID
+        string itemName 
+        int itemPrice
+        int itemSellPrice
+        Sprite itemIcon
+        bool canBeStacked
+        bool canBeDestroyed
+        float matterPercent
+
+    }
+
+    InventoryItem o -- "1" ItemType : itemType
+
+    class PlantScriptableObject {
+        <<ScriptableObject>>
+        int ID
+        string plantName
+        int daysForStage
+        int daysForDeath
+
+        seedSprite
+        stage1Sprite 
+        stage2Sprite 
+        stage3Sprite 
+        stage4Sprite 
+        stage5Sprite 
+
+
+    }
+    PlantScriptableObject o.. "*" InventoryItem : resourceID
+    PlantScriptableObject o.. "*" DBResourceProbabiliy : resourceID
+    class DBResourceProbabiliy{
+        
+    }
+
+    DBResourceProbabiliy o-- "1" InventoryItem
+    DBResourceProbabiliy o-- "*" DBProbabiliy
+    class DBProbabiliy{
+        amountToSpawn
+        probability
+    }
+
+    class PlaceableScriptableObject {
+        <<ScriptableObject>>
+
+        worldSprite
+        GameObject prefab
+        sidesSprites
+        int[] sidesColliders
+    }
+
+    PlaceableScriptableObject o-- "1" InventoryItem
+
+    
+
+    class WorldResources {
+        <<ScriptableObject>>
+        string resourceName
+        int PR
+        PlayerTool toolRequired
+        int levelRequired
+        resourceSprite
+        WorldResourceType resourceType
+        bool canBePicked
+    }
+    WorldResources o-- "*" DBResourceProbabiliy
+    WorldResources o-- "*" InventoryItem
+
+    class WorldTreesSaveData {
+        currentPR
+        treeStage
+        x
+        y
+        z
+    }
+
+    WorldTreesSaveData o-- "*" InventoryItem
+
+    class ItemType {
+        <<enum>>
+        Resource
+        Tool
+        Seed
+        Crafting
+        Fish
+        Insect
+        Placeable
+        TreeSeed
+        Food
+    }
