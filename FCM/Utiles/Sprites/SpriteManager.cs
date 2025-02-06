@@ -12,8 +12,7 @@ namespace FarlandsCoreMod.Utiles.Sprites
         {
             public static class UI
             { 
-                public static Path UI_29 = new("magin.fcm:UI_29");
-                public static Path UI_FCM = new("magin.fcm:UI_FCM");
+                public static Path UI_FM = new("magin.fcm:UI_FM");
             }
         }
 

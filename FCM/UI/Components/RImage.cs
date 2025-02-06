@@ -12,7 +12,7 @@ using Image = UnityEngine.UI.Image;
 
 namespace FarlandsCoreMod.UI.Components
 {
-    internal class RImage : RRect
+    public class RImage : RRect
     {
         public override string type => "image";
         public Utiles.Path source;

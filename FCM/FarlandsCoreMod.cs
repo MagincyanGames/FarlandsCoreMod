@@ -31,8 +31,6 @@ namespace FarlandsCoreMod
             ResourceBundle = AssetBundle.LoadFromFile(Paths.Plugin + "/fcm_bundle");
             ResourceBundle.GetAllAssetNames().ToList().ForEach(Debug.Log);
 
-            var ui_29 = ResourceBundle.LoadAsset("UI_29");
-
             OnLoadScene((scene, mode) =>
             {
                 if (scene.name == "JanduSoftLogoScene")
@@ -63,12 +61,13 @@ namespace FarlandsCoreMod
                 }
                 else if (scene.name == "MainMenu")
                 {
+
                     UIMaker ui = new(new()
                     {
                         baseGameObject = GameObjects.Find("MainMenu", "Canvas")
                     });
                         ui.Point("MainMenu:Canvas/MenuSpace/MainMenu");
-                            ui.Open(new RImage() 
+                            ui.Open(new RButton() 
                             {
                                 anchoredPosition = new Vector2(-4.8f, -60f),
                                 size = new Vector2(30,30),
@@ -77,7 +76,8 @@ namespace FarlandsCoreMod
                                 offsetMax = new Vector2(-4.8f, -94.1f),
                                 offsetMin = new Vector2(-34.8f, -109.1f),
                                 pivot = new Vector2(1, 0.5f),
-                                source = SpriteManager.Sprites.UI.UI_FCM,
+                                source = SpriteManager.Sprites.UI.UI_FM,
+                                onClick = () => Application.OpenURL("https://discord.gg/Uw42AhwygN")
 
                             }).Close();
                         ui.Close();
