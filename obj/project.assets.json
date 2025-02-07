@@ -41,7 +41,7 @@
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "0.2.0.3",
+    "version": "0.1.4.4",
     "restore": {
       "projectUniqueName": "D:\\FarlandsModding\\FarlandsCoreMod\\FarlandsCoreMod.csproj",
       "projectName": "FarlandsCoreMod",
@@ -53,7 +53,6 @@
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "D:\\FarlandsModding\\FarlandsCoreMod\\NuGet.Config",
         "C:\\Users\\thema\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"

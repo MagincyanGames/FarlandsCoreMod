@@ -15,6 +15,8 @@ using FarlandsCoreMod.Utiles.GameObjects;
 using UnityEngine.UI;
 using HarmonyLib;
 using FarlandsCoreMod.Scenes;
+using BepInEx.Logging;
+using Unity.VisualScripting;
 
 namespace FarlandsCoreMod
 {
@@ -36,66 +38,64 @@ namespace FarlandsCoreMod
             ResourceBundle.GetAllAssetNames().ToList().ForEach(Debug.Log);
 
             SceneLoader(new(typeof(FarlandsCoreMod)));
+        }
 
-            OnLoadScene((scene, mode) =>
+        [OnLoadScene("MainMenu")]
+        public static void OnLoadMainMenu()
+        {
+            UIMaker ui = new(new()
             {
-                if (scene.name == "MainMenu")
-                {
-
-                    UIMaker ui = new(new()
-                    {
-                        baseGameObject = GameObjects.Find("MainMenu", "Canvas")
-                    });
-                        ui.Point("MainMenu:Canvas/MenuSpace/MainMenu");
-                            ui.Open(new RButton() 
-                            {
-                                anchoredPosition = new Vector2(-4.8f, -60f),
-                                size = new Vector2(30,30),
-                                anchorMax = new Vector2(1, 0.5f),
-                                anchorMin = new Vector2(1, 0.5f),
-                                offsetMax = new Vector2(-4.8f, -94.1f),
-                                offsetMin = new Vector2(-34.8f, -109.1f),
-                                pivot = new Vector2(1, 0.5f),
-                                source = SpriteManager.Sprites.UI.UI_FM,
-                                onClick = () => Application.OpenURL("https://discord.gg/Uw42AhwygN")
-
-                            }).Close();
-                        ui.Close();
-
-                    ui.End();
-                }
+                baseGameObject = GameObjects.Find("MainMenu", "Canvas")
             });
+            ui.Point("MainMenu:Canvas/MenuSpace/MainMenu");
+            ui.Open(new RButton()
+            {
+                anchoredPosition = new Vector2(-4.8f, -60f),
+                size = new Vector2(30, 30),
+                anchorMax = new Vector2(1, 0.5f),
+                anchorMin = new Vector2(1, 0.5f),
+                offsetMax = new Vector2(-4.8f, -94.1f),
+                offsetMin = new Vector2(-34.8f, -109.1f),
+                pivot = new Vector2(1, 0.5f),
+                source = SpriteManager.Sprites.UI.UI_FM,
+                onClick = () => Application.OpenURL("https://discord.gg/Uw42AhwygN")
+
+            }).Close();
+            ui.Close();
+
+            ui.End();
 
         }
 
+
+        Coroutine onjandu = null;
         [OnLoadScene("JanduSoftLogoScene")]
         public static void OnJanduSoftScene()
         {
-            //UIMaker ui = new(new()
-            //{
-            //    renderMode = RenderMode.ScreenSpaceOverlay,
-            //    pixelPerfect = true,
-            //    scaleFactor = 4.5f,
-            //    renderOrder = 1000,
-
-            //    CanvasScaler_scaleFactor = 3.23f,
-            //    CanvasScaler_uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize,
-            //    CanvasScaler_screenMatchMode = CanvasScaler.ScreenMatchMode.Expand,
-            //    CanvasScaler_referencePixelPerUnit = 24,
-            //    CanvasScaler_referenceResolution = new Vector2(320, 240),
-            //});
-
-            //ui.Open(new RButton()
-            //{
-            //    name = "Logo",
-            //    source = new("magin.fcm:UI_29"),
-            //    position = new Vector2(0, -90),
-            //    size = new Vector2(48, 16),
-            //    onClick = () => SceneManager.LoadScene("MainMenu")
-            //}).Close().Close();
-
-            //ui.End();
+            Instance.Logger.LogInfo("JANDUUUU");
+            Instance.onjandu  = Instance.StartCoroutine(Instance.onJanduSoft());
         }
+        [OnUnloadScene("JanduSoftLogoScene")]
+        public static void OnJanduSoftSceneUnload()
+        {
+            Instance.Logger.LogInfo("SOFTTTTT");
+            Instance.StopCoroutine(Instance.onjandu);
+        }
+
+        private IEnumerator onJanduSoft()
+        {
+            Instance.Logger.LogInfo("OWO");
+            while (true)
+            {
+                yield return new WaitForEndOfFrame();
+                if (!string.IsNullOrEmpty(Input.inputString))
+                {
+                    Instance.Logger.LogInfo("unu");
+                    SceneManager.LoadScene("PreloadScene");
+                }
+            }
+        }
+
         public void Start()
         { 
         }

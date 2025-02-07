@@ -20,4 +20,21 @@ namespace FarlandsCoreMod.Scenes
 
 
     }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public class OnUnloadScene : Attribute
+    {
+        public string SceneName { get; private set; }
+
+        public OnUnloadScene()
+        {
+            SceneName = null;
+        }
+        public OnUnloadScene(string sceneName)
+        {
+            SceneName = sceneName;
+        }
+
+
+    }
 }

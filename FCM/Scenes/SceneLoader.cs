@@ -35,10 +35,29 @@ namespace FarlandsCoreMod.Scenes
                 {
                     if (method.GetCustomAttributes(typeof(OnLoadScene), false).Length > 0)
                         LoadMethod(method);
+
+                    if (method.GetCustomAttributes(typeof(OnUnloadScene), false).Length > 0)
+                        UnloadMethod(method);
                 }
             }
         }
+        public void UnloadMethod(MethodInfo methodInfo)
+        {
+            var att = (OnUnloadScene)methodInfo.GetCustomAttributes(typeof(OnUnloadScene), false)[0];
 
+            ParameterInfo[] parameters = methodInfo.GetParameters();
+
+            SceneManager.sceneUnloaded += (scene) =>
+            {
+                if (att.SceneName == null || att.SceneName == scene.name)
+                {
+                    if (parameters.Length == 0)
+                        methodInfo.Invoke(null, null);
+                    else if (parameters.Length == 1)
+                        methodInfo.Invoke(null, [scene]);
+                }
+            };
+        }
         public void LoadMethod(MethodInfo methodInfo)
         {
             var att = (OnLoadScene)methodInfo.GetCustomAttributes(typeof(OnLoadScene), false)[0];
