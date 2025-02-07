@@ -14,6 +14,7 @@ using FarlandsCoreMod.UI.Components;
 using FarlandsCoreMod.Utiles.GameObjects;
 using UnityEngine.UI;
 using HarmonyLib;
+using FarlandsCoreMod.Scenes;
 
 namespace FarlandsCoreMod
 {
@@ -21,7 +22,7 @@ namespace FarlandsCoreMod
     public class FarlandsCoreMod : BaseUnityPlugin, ISpriteLoader
     {
         private ConfigEntry<bool> debug_skipIntro;
-        private ConfigEntry<bool> debug_quitEarlyAccessScreen;
+
         public static FarlandsCoreMod Instance;
         public static BepInPlugin Metadata => Instance.Info.Metadata;
         public AssetBundle ResourceBundle { get; private set; }
@@ -33,35 +34,11 @@ namespace FarlandsCoreMod
             ResourceBundle = AssetBundle.LoadFromFile(Paths.Plugin + "/fcm_bundle");
             ResourceBundle.GetAllAssetNames().ToList().ForEach(Debug.Log);
 
+            SceneLoader(new(typeof(FarlandsCoreMod)));
+
             OnLoadScene((scene, mode) =>
             {
-                if (scene.name == "JanduSoftLogoScene")
-                {
-                    //UIMaker ui = new(new()
-                    //{
-                    //    renderMode = RenderMode.ScreenSpaceOverlay,
-                    //    pixelPerfect = true,
-                    //    scaleFactor = 4.5f,
-                    //    renderOrder = 1000,
-
-                    //    CanvasScaler_scaleFactor = 3.23f,
-                    //    CanvasScaler_uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize,
-                    //    CanvasScaler_screenMatchMode = CanvasScaler.ScreenMatchMode.Expand,
-                    //    CanvasScaler_referencePixelPerUnit = 24,
-                    //    CanvasScaler_referenceResolution = new Vector2(320, 240),
-                    //});
-
-                    //ui.Open(new RImage()
-                    //{
-                    //    name = "Logo",
-                    //    source = SpriteManager.Sprites.UI.UI_29,
-                    //    size = new Vector2(200, 100),
-                    //}).Close().Close();
-
-                    //ui.End();
-
-                }
-                else if (scene.name == "MainMenu")
+                if (scene.name == "MainMenu")
                 {
 
                     UIMaker ui = new(new()
@@ -90,6 +67,34 @@ namespace FarlandsCoreMod
 
         }
 
+        [OnLoadScene("JanduSoftLogoScene")]
+        public static void OnJanduSoftScene()
+        {
+            //UIMaker ui = new(new()
+            //{
+            //    renderMode = RenderMode.ScreenSpaceOverlay,
+            //    pixelPerfect = true,
+            //    scaleFactor = 4.5f,
+            //    renderOrder = 1000,
+
+            //    CanvasScaler_scaleFactor = 3.23f,
+            //    CanvasScaler_uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize,
+            //    CanvasScaler_screenMatchMode = CanvasScaler.ScreenMatchMode.Expand,
+            //    CanvasScaler_referencePixelPerUnit = 24,
+            //    CanvasScaler_referenceResolution = new Vector2(320, 240),
+            //});
+
+            //ui.Open(new RButton()
+            //{
+            //    name = "Logo",
+            //    source = new("magin.fcm:UI_29"),
+            //    position = new Vector2(0, -90),
+            //    size = new Vector2(48, 16),
+            //    onClick = () => SceneManager.LoadScene("MainMenu")
+            //}).Close().Close();
+
+            //ui.End();
+        }
         public void Start()
         { 
         }
@@ -101,6 +106,10 @@ namespace FarlandsCoreMod
         public Sprite Load(string path)
         {
             return ResourceBundle.LoadAsset<Sprite>(path);
+        }
+        public void SceneLoader(SceneLoader sceneLoader)
+        {
+            sceneLoader.Load();
         }
 
         public void OnLoadScene(Action<Scene, LoadSceneMode> action)
