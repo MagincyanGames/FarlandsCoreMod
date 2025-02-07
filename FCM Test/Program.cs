@@ -11,6 +11,9 @@ class Program
     {
         // Variable de depuración
         bool debug = true;
+
+
+        // NO TOCAR
         bool copy = true;
         bool zip = true;
 

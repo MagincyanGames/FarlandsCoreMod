@@ -27,6 +27,7 @@ namespace FarlandsCoreMod
         public static BepInPlugin Metadata => Instance.Info.Metadata;
         public AssetBundle ResourceBundle { get; private set; }
         public Harmony harmony = new Harmony("magin.fcm");
+
         public void Awake()
         {
             harmony.PatchAll();

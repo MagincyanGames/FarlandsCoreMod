@@ -21,8 +21,7 @@ namespace FarlandsCoreMod.UI.Components
         public override Component Render()
         {
             var rect = gameObjectForRender().TryAddComponent<RectTransform>();
-            
-            
+
             if (anchorMax != null) rect.anchorMax = anchorMax.Value;
             if (anchorMin != null) rect.anchorMin = anchorMin.Value;
             if (pivot != null) rect.pivot = pivot.Value;
