@@ -2,7 +2,8 @@
 ## FarlandsCoreMod
 - Se ha arreglado un error en la versión.
 - Se ha agregado la versión en el menú principal.
-
+- Se ha agregado el atributo `OnLoadScene`.
+- Se ha agregado el método en la clase `FarlandsCoreMod` para cargar las escenas.
 ### UIMaker
 - Se ha creado la clase `RButton`
 - Se ha cambiado el logo de FM para que sea un botón.
