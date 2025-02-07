@@ -553,16 +553,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Update="fcminfo.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>fcminfo.tt</DependentUpon>
-    </Compile>
-    <Compile Update="PluginInfo.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>PluginInfo.tt</DependentUpon>
-    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -582,11 +572,12 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Update="fcminfo.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>fcminfo.cs</LastGenOutput>
-    </None>
+    <T4ParameterValues Include="Version">
+      <Value>$(Version)</Value>
+      <Visible>false</Visible>
+    </T4ParameterValues>
   </ItemGroup>
+  
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="&#xD;&#xA;del &quot;$(TargetDir)..\FCM_$(Version).zip&quot;&#xD;&#xA;powershell -Command &quot;Compress-Archive -Path '$(TargetDir)FarlandsCoreMod.dll', '$(TargetDir)../fcm_bundle', '$(TargetDir)MoonSharp.Interpreter.dll' -DestinationPath '$(TargetDir)..\FCM_$(Version).zip'&quot;" />
   </Target>

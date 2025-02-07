@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace FarlandsCoreMod.UI.Components
 {
-    public abstract class RRect : RElement
+    public class RRect : RElement
     {
         public Vector2? anchoredPosition;
         public Vector2? size;
@@ -15,7 +15,10 @@ namespace FarlandsCoreMod.UI.Components
         public Vector2? pivot;
         public Vector2? offsetMax;
         public Vector2? offsetMin;
-        public Component RectRender()
+
+        public override string type => "rect";
+
+        public override Component Render()
         {
             var rect = gameObjectForRender().TryAddComponent<RectTransform>();
             

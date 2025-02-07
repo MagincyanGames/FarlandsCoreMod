@@ -13,6 +13,7 @@ using FarlandsCoreMod.UI;
 using FarlandsCoreMod.UI.Components;
 using FarlandsCoreMod.Utiles.GameObjects;
 using UnityEngine.UI;
+using HarmonyLib;
 
 namespace FarlandsCoreMod
 {
@@ -24,9 +25,10 @@ namespace FarlandsCoreMod
         public static FarlandsCoreMod Instance;
         public static BepInPlugin Metadata => Instance.Info.Metadata;
         public AssetBundle ResourceBundle { get; private set; }
-
+        public Harmony harmony = new Harmony("magin.fcm");
         public void Awake()
         {
+            harmony.PatchAll();
             Instance = this;
             ResourceBundle = AssetBundle.LoadFromFile(Paths.Plugin + "/fcm_bundle");
             ResourceBundle.GetAllAssetNames().ToList().ForEach(Debug.Log);
