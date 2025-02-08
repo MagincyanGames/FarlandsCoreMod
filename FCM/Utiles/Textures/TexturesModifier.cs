@@ -3,7 +3,7 @@ using Farlands.Inventory;
 using Farlands.PlaceableObjectsSystem;
 using Farlands.PlantSystem;
 using Farlands.WorldResources;
-using FarlandsCoreMod.Utiles.Loaders;
+//using FarlandsCoreMod.Utiles.Loaders;
 using PixelCrushers.DialogueSystem;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Xml.Linq;
 using UnityEngine;
 
-namespace FarlandsCoreMod.Utiles
+namespace FarlandsCoreMod.Utiles.Textures
 {
     public static class TexturesModifier
     {
@@ -19,12 +19,14 @@ namespace FarlandsCoreMod.Utiles
 
         public static Texture2D DuplicateTexture(Texture2D source)
         {
-            RenderTexture renderTex = RenderTexture.GetTemporary(
+            RenderTexture renderTex = RenderTexture.GetTemporary
+            (
                 source.width,
                 source.height,
                 0,
                 RenderTextureFormat.Default,
-                RenderTextureReadWrite.Linear);
+                RenderTextureReadWrite.Linear
+            );
 
             Graphics.Blit(source, renderTex);
             RenderTexture previous = RenderTexture.active;
@@ -36,6 +38,7 @@ namespace FarlandsCoreMod.Utiles
 
             RenderTexture.active = previous;
             RenderTexture.ReleaseTemporary(renderTex);
+
             return readableText;
         }
 
