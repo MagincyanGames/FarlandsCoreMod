@@ -578,6 +578,10 @@
     </T4ParameterValues>
   </ItemGroup>
   
+  <ItemGroup>
+    <Folder Include="Utiles\Textures\" />
+  </ItemGroup>
+  
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="&#xD;&#xA;del &quot;$(TargetDir)..\FCM_$(Version).zip&quot;&#xD;&#xA;powershell -Command &quot;Compress-Archive -Path '$(TargetDir)FarlandsCoreMod.dll', '$(TargetDir)..\..\..\..\Tools\fcm_bundle', '$(TargetDir)MoonSharp.Interpreter.dll' -DestinationPath '$(TargetDir)..\FCM_$(Version).zip'&quot;" />
   </Target>
