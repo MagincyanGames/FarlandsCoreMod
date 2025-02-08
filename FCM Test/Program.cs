@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 class Program
@@ -11,7 +13,6 @@ class Program
     {
         // Variable de depuración
         bool debug = true;
-
 
         // NO TOCAR
         bool copy = true;
@@ -29,20 +30,20 @@ class Program
         // Definir la ruta de destino
         string destinationPath = Path.Combine(Directory.GetCurrentDirectory(), "farlands");
 
-        // Verificar si la carpeta de destino existe y comparar versiones
+        // Verificar si la carpeta de destino existe y comparar archivos globalgamemanagers
         if (Directory.Exists(destinationPath))
         {
-            string sourceVersion = GetVersionFromFile(Path.Combine(farlandsPath, "version.txt"));
-            string destinationVersion = GetVersionFromFile(Path.Combine(destinationPath, "version.txt"));
+            string sourceFile = Path.Combine(farlandsPath, "Farlands_Data", "globalgamemanagers");
+            string destinationFile = Path.Combine(destinationPath, "Farlands_Data", "globalgamemanagers");
 
-            if (sourceVersion == destinationVersion)
+            if (File.Exists(sourceFile) && File.Exists(destinationFile) && FilesAreEqual(sourceFile, destinationFile))
             {
-                Console.WriteLine("La versión del juego en FARLANDS_PATH y la carpeta de destino son iguales. No se requiere copia.");
+                Console.WriteLine("Los archivos globalgamemanagers en FARLANDS_PATH y la carpeta de destino son iguales. No se requiere copia.");
                 copy = false;
             }
             else
             {
-                Console.WriteLine("Las versiones son diferentes. Eliminando la carpeta de destino existente...");
+                Console.WriteLine("Los archivos globalgamemanagers son diferentes. Eliminando la carpeta de destino existente...");
                 Directory.Delete(destinationPath, true);
             }
         }
@@ -54,6 +55,30 @@ class Program
             CopyDirectory(farlandsPath, destinationPath);
         }
 
+        string bepinexUrl = "https://github.com/BepInEx/BepInEx/releases/download/v6.0.0-pre.1/BepInEx_UnityMono_x64_6.0.0-pre.1.zip";
+        string bepinexZipPath = Path.Combine(Path.GetTempPath(), "BepInEx.zip");
+        string bepinexExtractPath = Path.Combine(destinationPath, "BepInEx", "core");
+
+        if (!Directory.Exists(bepinexExtractPath))
+        {
+            Console.WriteLine($"Descargando BepInEx desde {bepinexUrl}...");
+            using (var client = new WebClient())
+            {
+                client.DownloadFile(bepinexUrl, bepinexZipPath);
+            }
+
+            Console.WriteLine($"Extrayendo BepInEx a {destinationPath}...");
+            ZipFile.ExtractToDirectory(bepinexZipPath, destinationPath, true);
+
+            // Eliminar el archivo ZIP descargado
+            File.Delete(bepinexZipPath);
+        }
+        else
+        {
+            Console.WriteLine("BepInEx ya está instalado.");
+        }
+
+
         // Buscar el archivo ZIP en el proyecto principal
         string sourceDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "FCM", "bin", "Debug");
         string zipPattern = "FCM_*.zip";
@@ -64,16 +89,14 @@ class Program
             Console.WriteLine($"Error: No se encontró ningún archivo que coincida con el patrón {zipPattern} en {sourceDir}.");
             return;
         }
-        var f = zipFiles
-            .Select(file => new { File = file, Version = GetVersionFromFileName(file) })
-            .OrderByDescending(x => x.Version).ToList();
+
         // Seleccionar el archivo ZIP con la mayor versión
         string sourceZipPath = zipFiles
             .Select(file => new { File = file, Version = GetVersionFromFileName(file) })
             .OrderByDescending(x => x.Version)
             .First().File;
 
-        string destinationExtractPath = Path.Combine(destinationPath, "bepinex", "plugins");
+        string destinationExtractPath = Path.Combine(destinationPath, "BepInEx", "plugins");
 
         // Crear la carpeta de destino si no existe
         Directory.CreateDirectory(destinationExtractPath);
@@ -91,10 +114,12 @@ class Program
         // Eliminar el directorio temporal
         Directory.Delete(tempExtractPath, true);
 
+        // Descargar y descomprimir BepInEx si no está instalado
+        
         // Copiar mono-2.0-bdwgc.dll si debug es true
         if (debug)
         {
-            string toolsPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "Tools");
+            string toolsPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "Tools");
             string dllSourcePath = Path.Combine(toolsPath, "mono-2.0-bdwgc.dll");
             string dllDestinationPath = Path.Combine(destinationPath, "MonoBleedingEdge", "EmbedRuntime", "mono-2.0-bdwgc.dll");
 
@@ -110,7 +135,7 @@ class Program
 
             // Copiar la carpeta sinai-dev-UnityExplorer
             string sinaiSourcePath = Path.Combine(toolsPath, "sinai-dev-UnityExplorer");
-            string sinaiDestinationPath = Path.Combine(destinationPath, "sinai-dev-UnityExplorer");
+            string sinaiDestinationPath = Path.Combine(destinationExtractPath, "sinai-dev-UnityExplorer");
 
             if (Directory.Exists(sinaiSourcePath))
             {
@@ -168,12 +193,13 @@ class Program
         return new Version(0, 0, 0, 0);
     }
 
-    static string GetVersionFromFile(string filePath)
+    static bool FilesAreEqual(string filePath1, string filePath2)
     {
-        if (File.Exists(filePath))
+        using (var hashAlgorithm = SHA256.Create())
         {
-            return File.ReadAllText(filePath).Trim();
+            byte[] hash1 = hashAlgorithm.ComputeHash(File.ReadAllBytes(filePath1));
+            byte[] hash2 = hashAlgorithm.ComputeHash(File.ReadAllBytes(filePath2));
+            return hash1.SequenceEqual(hash2);
         }
-        return string.Empty;
     }
 }
