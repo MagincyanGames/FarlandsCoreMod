@@ -17,25 +17,26 @@ using HarmonyLib;
 using FarlandsCoreMod.Scenes;
 using BepInEx.Logging;
 using Unity.VisualScripting;
+using FarlandsCoreMod.Configuration;
+using FarlandsCoreMod.Utiles;
 
 namespace FarlandsCoreMod
 {
     [BepInPlugin("magin.fcm", "FarlandsCoreMod", FCMInfo.Version)]
     public class FarlandsCoreMod : BaseUnityPlugin, ISpriteLoader
     {
-        private ConfigEntry<bool> debug_skipIntro;
-
         public static FarlandsCoreMod Instance;
         public static BepInPlugin Metadata => Instance.Info.Metadata;
         public AssetBundle ResourceBundle { get; private set; }
         public Harmony harmony = new Harmony("magin.fcm");
 
-        public void Awake()
+0        public void Awake()
         {
+            CONFIG.Add(this, "test", "Test", 0);
+
             harmony.PatchAll();
             Instance = this;
             ResourceBundle = AssetBundle.LoadFromFile(Paths.Plugin + "/fcm_bundle");
-            ResourceBundle.GetAllAssetNames().ToList().ForEach(Debug.Log);
 
             SceneLoader(new(typeof(FarlandsCoreMod)));
         }
@@ -64,9 +65,7 @@ namespace FarlandsCoreMod
             ui.Close();
 
             ui.End();
-
         }
-
 
         Coroutine onjandu = null;
         [OnLoadScene("JanduSoftLogoScene")]

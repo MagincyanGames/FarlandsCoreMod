@@ -28,11 +28,19 @@ namespace FarlandsCoreMod.Utiles
             }
             else 
             {
-                this.mod = (BaseUnityPlugin) UnityChainloader.Instance.Plugins[splited[0].Trim()].Instance;
+                this.mod = ModManager.GetMod(splited[0].Trim());
                 this.path = splited[1].Trim();
             }
         }
 
+        public static implicit operator string(Path path)
+        {
+            return path.path;
+        }
+        public static implicit operator Path(string path)
+        {
+            return new Path(path);
+        }
         public string name
         {
             get
