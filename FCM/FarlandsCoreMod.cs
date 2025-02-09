@@ -19,6 +19,7 @@ using BepInEx.Logging;
 using Unity.VisualScripting;
 using FarlandsCoreMod.Configuration;
 using FarlandsCoreMod.Utiles;
+using CommandTerminal;
 
 namespace FarlandsCoreMod
 {
@@ -72,7 +73,8 @@ namespace FarlandsCoreMod
         }
 
         public void Start()
-        { 
+        {
+            this.AddComponent<Terminal>();
         }
 
         public List<PluginInfo> LoadedMods => UnityChainloader.Instance.Plugins.Values.Where(x => x.Metadata.GUID != Metadata.GUID).ToList();
