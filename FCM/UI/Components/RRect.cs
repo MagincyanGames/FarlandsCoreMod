@@ -20,22 +20,25 @@ namespace FarlandsCoreMod.UI.Components
 
         public override Component Render()
         {
-            var rect = gameObjectForRender().TryAddComponent<RectTransform>();
+            var rect = gameObject.TryAddComponent<RectTransform>();
 
             if (anchorMax != null) rect.anchorMax = anchorMax.Value;
             if (anchorMin != null) rect.anchorMin = anchorMin.Value;
             if (pivot != null) rect.pivot = pivot.Value;
             if (offsetMax != null) rect.offsetMax = offsetMax.Value;
             if (offsetMin != null) rect.offsetMin = offsetMin.Value;
-            
+
+            if (size != null) rect.sizeDelta = size.Value;
+            if (anchoredPosition != null) rect.anchoredPosition = anchoredPosition.Value;
+            rect.transform.localScale = new Vector3(1, 1, 1);
+
             return rect;
         }
         public void RectPosition()
         {
-            var rect = gameObjectForRender().TryAddComponent<RectTransform>();
-
-            if (size != null) rect.sizeDelta = size.Value;
-            if (anchoredPosition != null) rect.anchoredPosition = anchoredPosition.Value;
+            
         }
+
+        public override Transform SubPoint() => gameObject.transform;
     }
 }

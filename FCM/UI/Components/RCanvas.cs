@@ -40,5 +40,7 @@ namespace FarlandsCoreMod.UI.Components
             if(CanvasScaler_referenceResolution != null) canvasScaler.referenceResolution = CanvasScaler_referenceResolution.Value;
             return canvas;
         }
+
+        public override Transform SubPoint() => gameObject.transform;
     }
 }

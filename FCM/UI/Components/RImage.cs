@@ -18,7 +18,7 @@ namespace FarlandsCoreMod.UI.Components
         public Utiles.Path source;
         public override Component Render()
         {
-            var gameObject = base.Render().gameObject;
+            base.Render();
             Image img = gameObject.TryAddComponent<Image>();
 
             img.sprite = SpriteManager.Load(source);

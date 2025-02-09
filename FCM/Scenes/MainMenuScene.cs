@@ -15,34 +15,51 @@ namespace FarlandsCoreMod.Scenes
         [OnLoadScene("MainMenu")]
         public static void OnLoadMainMenu()
         {
-            UIMaker ui = new(new()
-            {
-                baseGameObject = GameObjects.Find("MainMenu", "Canvas")
-            });
+            UIMaker ui = new();
             ui.Point("MainMenu:Canvas/MenuSpace/MainMenu");
-                ui.Open(new RButton()
-                {
-                    anchoredPosition = new Vector2(-4.8f, -60f),
-                    size = new Vector2(30, 30),
-                    anchorMax = new Vector2(1, 0.5f),
-                    anchorMin = new Vector2(1, 0.5f),
-                    offsetMax = new Vector2(-4.8f, -94.1f),
-                    offsetMin = new Vector2(-34.8f, -109.1f),
-                    pivot = new Vector2(1, 0.5f),
-                    source = SpriteManager.Sprites.UI.UI_FM,
-                    onClick = () => Application.OpenURL("https://discord.gg/Uw42AhwygN")
+            ui.Render(new RButton()
+            {
+                anchoredPosition = new Vector2(-4.8f, -60f),
+                size = new Vector2(30, 30),
+                anchorMax = new Vector2(1, 0.5f),
+                anchorMin = new Vector2(1, 0.5f),
+                offsetMax = new Vector2(-4.8f, -94.1f),
+                offsetMin = new Vector2(-34.8f, -109.1f),
+                pivot = new Vector2(1, 0.5f),
+                source = SpriteManager.Sprites.UI.UI_FM,
+                onClick = () => Application.OpenURL("https://discord.gg/Uw42AhwygN")
 
-                }).Close();
-            ui.Close();
+            });
             ui.Point("MainMenu:Canvas/Settings");
-                ui.Open(new RImage()
+            ui.Render(new RImage()
+            {
+                size = new Vector2(150, 125),
+                anchoredPosition = new Vector2(204, 16),
+                source = "magin.fcm:UI_24"
+            });
+            ui.RenderSubPoint(new RScrollView()
+            {
+                name = "ScrollView",
+                horizontal = false,
+                vertical = true,
+                movementType = ScrollRect.MovementType.Clamped,
+                elasticity = 0.1f,
+                inertia = true,
+                decelerationRate = 0.135f,
+                scrollSensitivity = 10f,
+                size = new Vector2(150, 125),
+                anchoredPosition = new Vector2(204, 16),
+                source = "magin.fcm:UI_24"
+            });
+            for(int i = 0; i < 30; i++)
+            {
+                ui.Render(new RImage()
                 {
-                    size = new Vector2(150, 125),
-                    anchoredPosition = new Vector2(204, 16),
-                    source = "magin.fcm:UI_24"
-                }).Close();
-            ui.Close();
-            ui.End();
+                    name = "Mondongo",
+                    source = "magin.fcm:UI_FM",
+                    size = new Vector2(100, 100),
+                });
+            }
         }
     }
 }

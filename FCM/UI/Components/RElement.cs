@@ -10,49 +10,27 @@ namespace FarlandsCoreMod.UI.Components
         public string? name;
         public Vector2? position;
 
-        public GameObject baseGameObject;
+        public GameObject gameObject;
 
         public abstract string type { get; }
         public List<RElement> childs = new List<RElement>();
 
         public GameObject gameObjectForRender()
         {
-            if(baseGameObject == null)
+            if(gameObject == null)
                 return new GameObject(name);
 
-            return baseGameObject;
+            return gameObject;
         }
         public abstract Component Render();
+        public abstract Transform SubPoint();
 
-        public Component RenderElement()
+        public Component RenderElement(Transform parent)
         {
-            var render = Render();
-            this.baseGameObject = render.gameObject;
-
-            foreach (var child in childs)
-            {
-                var childBase = child.baseGameObject;
-                var crender = child.RenderElement();
-
-                if (childBase == null) crender.transform.SetParent(render.transform);
-            }
-
-            return render;
+            gameObject = gameObjectForRender();
+            gameObject.transform.SetParent(parent);
+            return Render();
         }
 
-        public void SetPositions()
-        {
-            if(baseGameObject == null) return;
-
-            if (this is RRect rect) rect.RectPosition();
-
-            if (position != null) baseGameObject.transform.localPosition = position.Value;
-            this.baseGameObject.transform.localScale = new Vector3(1, 1, 1);
-
-            foreach (var child in childs)
-            {
-                child.SetPositions();
-            }
-        }
     }
 }
