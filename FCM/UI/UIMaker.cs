@@ -30,12 +30,6 @@ namespace FarlandsCoreMod.UI
         public UIMaker RenderAndPoint(RElement element)
         {
             var render = element.RenderElement(point);
-            this.point = render.transform;
-            return this;
-        }
-        public UIMaker RenderSubPoint(RElement element)
-        {
-            var render = element.RenderElement(point);
             this.point = element.SubPoint();
             return this;
         }

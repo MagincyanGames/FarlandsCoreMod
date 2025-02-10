@@ -34,7 +34,6 @@ namespace FarlandsCoreMod
         public void Awake()
         {
             CONFIG.Add(this, "test", "Test", 0);
-
             harmony.PatchAll();
             Instance = this;
             ResourceBundle = AssetBundle.LoadFromFile(Paths.Plugin + "/fcm_bundle");
@@ -48,6 +47,7 @@ namespace FarlandsCoreMod
         [OnLoadScene("JanduSoftLogoScene")]
         public static void OnJanduSoftScene()
         {
+            
             Instance.Logger.LogInfo("JANDUUUU");
             Instance.onjandu  = Instance.StartCoroutine(Instance.onJanduSoft());
         }

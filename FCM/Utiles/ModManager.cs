@@ -1,7 +1,10 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
 using BepInEx.Unity.Bootstrap;
+using FMOD;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -22,6 +25,8 @@ namespace FarlandsCoreMod.Utiles
             return null;
         }
 
-        public static List<BaseUnityPlugin> mods => UnityChainloader.Instance.Plugins.Values.ToList().ConvertAll(plugin => (BaseUnityPlugin)plugin.Instance);
+        public static List<BaseUnityPlugin> mods => UnityChainloader.Instance.Plugins.Values
+            .Where(x => x.Dependencies.Any(x=>x.DependencyGUID == "magin.fcm") || x.Metadata.GUID == "magin.fcm")
+            .ToList().ConvertAll(plugin => (BaseUnityPlugin)plugin.Instance);
     }
 }

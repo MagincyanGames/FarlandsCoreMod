@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine;
 using FarlandsCoreMod.Utiles.GameObjects;
 using UnityEngine.UI;
+using FarlandsCoreMod.Utiles;
 
 namespace FarlandsCoreMod.Scenes
 {
@@ -31,13 +32,7 @@ namespace FarlandsCoreMod.Scenes
 
             });
             ui.Point("MainMenu:Canvas/Settings");
-            ui.Render(new RImage()
-            {
-                size = new Vector2(150, 125),
-                anchoredPosition = new Vector2(204, 16),
-                source = "magin.fcm:UI_24"
-            });
-            ui.RenderSubPoint(new RScrollView()
+            ui.Render(new RScrollView()
             {
                 name = "ScrollView",
                 horizontal = false,
@@ -51,13 +46,23 @@ namespace FarlandsCoreMod.Scenes
                 anchoredPosition = new Vector2(204, 16),
                 source = "magin.fcm:UI_24"
             });
-            for(int i = 0; i < 30; i++)
+            foreach(var mod in ModManager.mods)
             {
-                ui.Render(new RImage()
+                ui.Point("MainMenu:Canvas/Settings/ScrollView/Viewport/Content");
+                ui.RenderAndPoint(new RImage()
                 {
-                    name = "Mondongo",
-                    source = "magin.fcm:UI_FM",
-                    size = new Vector2(100, 100),
+                    size = new Vector2(105, 25),
+                    source = "magin.fcm:UI_36"
+                });
+                ui.Render(new RText()
+                {
+                    size = new Vector2(105, 25),
+                    name = $"{mod.Info.Metadata.Name}-text",
+                    text = mod.Info.Metadata.Name,
+                    fontSize = 8,
+                    anchoredPosition = new Vector2(0, 2.5f),
+                    verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
+                    horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
                 });
             }
         }

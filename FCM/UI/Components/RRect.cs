@@ -20,6 +20,7 @@ namespace FarlandsCoreMod.UI.Components
 
         public override Component Render()
         {
+
             var rect = gameObject.TryAddComponent<RectTransform>();
 
             if (anchorMax != null) rect.anchorMax = anchorMax.Value;

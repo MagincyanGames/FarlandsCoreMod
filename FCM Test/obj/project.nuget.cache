@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "zCC+BV2XSS8=",
+  "success": true,
+  "projectFilePath": "D:\\FarlandsModding\\FarlandsCoreMod\\FCM Test\\FCM Test.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\thema\\.nuget\\packages\\farlandscoremod\\0.2.0.5\\farlandscoremod.0.2.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
