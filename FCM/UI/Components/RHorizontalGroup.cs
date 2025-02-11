@@ -31,12 +31,12 @@ namespace FarlandsCoreMod.UI.Components
             // Configura el HorizontalLayoutGroup
             var layoutGroup = gameObject.GetComponent<HorizontalLayoutGroup>();
             layoutGroup.childForceExpandWidth = false;   // Evitar que los elementos se expandan
-            layoutGroup.childForceExpandHeight = false;  // Evitar que los elementos se expandan en altura
+            layoutGroup.childForceExpandHeight = true;  // Evitar que los elementos se expandan en altura
             layoutGroup.childAlignment = TextAnchor.MiddleCenter;  // Alineación centrada
             if (spacing != null) layoutGroup.spacing = spacing.Value; // Asignar el espaciado si se ha dado
 
-            layoutGroup.childControlWidth = true;  // Controlar el ancho de los elementos
-            layoutGroup.childControlHeight = true; // Controlar la altura de los elementos
+            layoutGroup.childControlWidth = false;  // Controlar el ancho de los elementos
+            layoutGroup.childControlHeight = false; // Controlar la altura de los elementos
 
             // Configura el ContentSizeFitter
             var fitter = gameObject.GetComponent<ContentSizeFitter>();

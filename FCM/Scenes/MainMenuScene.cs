@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using FarlandsCoreMod.Utiles;
 using FarlandsCoreMod.Configuration;
 using SuperTiled2Unity;
+using TMPro;
 
 namespace FarlandsCoreMod.Scenes
 {
@@ -75,35 +76,61 @@ namespace FarlandsCoreMod.Scenes
                 {
                     ui.Point(group.gameObject);
                     string txt;
+                    TMP_InputField.ContentType type = TMP_InputField.ContentType.Standard;
+                    if (config.SettingType == typeof(int)) type = TMP_InputField.ContentType.IntegerNumber;
+                    if (config.SettingType == typeof(float)) type = TMP_InputField.ContentType.DecimalNumber;
 
                     if (config.Definition.Section.IsEmpty())
                         txt = config.Definition.Key;
-                    else txt = config.Definition.Section + "." + config.Definition.Key;
+                    else txt = $"[{config.Definition.Section }]"+ "\n" + config.Definition.Key;
                     ui.RenderAndPoint(new RHorizontalGroup
                     {
                         name = $"{config.Definition}-hg",
-                        size = new Vector2(105, 10),
+                        size = new Vector2(105, 30),
                         anchoredPosition = new Vector2(0, 0),
-                        spacing = 6,
+                        spacing = 5,
                         source = null
 
                     });
+
+                    Func<string, object> caster = (string s) =>
+                    {
+                        if (type == TMP_InputField.ContentType.IntegerNumber)
+                        {
+                            return int.Parse(s);
+                        }
+                        return null;
+                    };
 
                     ui.Render(new RText()
                     {
                         name = $"{txt}-text",
                         text = txt,
-                        fontSize = 6,
+                        size = new Vector2(30, 15), 
+                        fontSize = 7,
                         verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
                         horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
+                    });
+                    ui.RenderAndPoint(new RImage()
+                    {
+                        source = "magin.fcm:UI_32",
+                        size = new Vector2(50, 15),
                     });
                     ui.Render(new RInputText()
                     {
                         name = $"{txt}-it",
-                        text = txt,
-                        fontSize = 6,
-                        size = new Vector2(25, 10),
-                        source = "magin.fcm:UI_32",
+                        text = config.BoxedValue.ToString(),
+                        fontSize = 8,
+                        OnReload = go => go.GetComponent<TMP_InputField>().text = config.BoxedValue.ToString(),
+                        OnEnable = go => go.GetComponent<UIMakerElementComponent>().element.Reload(),
+                        onEndEdit = s => {
+                            
+                            config.BoxedValue = caster(s);
+                            Debug.Log(config.BoxedValue);
+                        },
+                        contentType = type,
+                        //fontSize = 10,
+                        size = new Vector2(50, 15)
                     });
                 }
             }

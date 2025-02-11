@@ -41,5 +41,6 @@ namespace FarlandsCoreMod.UI.Components
         }
 
         public override Transform SubPoint() => gameObject.transform;
+
     }
 }
