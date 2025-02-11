@@ -51,11 +51,15 @@ namespace FarlandsCoreMod.Scenes
             foreach(var mod in ModManager.mods)
             {
                 ui.Point("MainMenu:Canvas/Settings/ScrollView/Viewport/Content");
-                ui.RenderAndPoint(new RVerticalGroup
+
+                var group = new RVerticalGroup
                 {
+                    name = $"{mod.Info.Metadata.Name}-group",
                     source = "magin.fcm:UI_31",
                     spacing = 1,
-                });
+                };
+
+                ui.RenderAndPoint(group);
                 ui.Render(new RText()
                 {
                     size = new Vector2(105, 15),
@@ -69,21 +73,37 @@ namespace FarlandsCoreMod.Scenes
 
                 foreach (var config in CONFIG.GetConfigs(mod))
                 {
+                    ui.Point(group.gameObject);
                     string txt;
 
                     if (config.Definition.Section.IsEmpty())
                         txt = config.Definition.Key;
                     else txt = config.Definition.Section + "." + config.Definition.Key;
+                    ui.RenderAndPoint(new RHorizontalGroup
+                    {
+                        name = $"{config.Definition}-hg",
+                        size = new Vector2(105, 10),
+                        anchoredPosition = new Vector2(0, 0),
+                        spacing = 6,
+                        source = null
+
+                    });
 
                     ui.Render(new RText()
                     {
-                        size = new Vector2(105, 10),
-                        name = $"{config.Definition}-text",
+                        name = $"{txt}-text",
                         text = txt,
                         fontSize = 6,
-                        anchoredPosition = new Vector2(0, 0),
                         verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
                         horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
+                    });
+                    ui.Render(new RInputText()
+                    {
+                        name = $"{txt}-it",
+                        text = txt,
+                        fontSize = 6,
+                        size = new Vector2(25, 10),
+                        source = "magin.fcm:UI_32",
                     });
                 }
             }

@@ -80,7 +80,10 @@ namespace FarlandsCoreMod
         public List<PluginInfo> LoadedMods => UnityChainloader.Instance.Plugins.Values.Where(x => x.Metadata.GUID != Metadata.GUID).ToList();
 
         public BaseUnityPlugin GetPlugin(string guid) => (BaseUnityPlugin) UnityChainloader.Instance.Plugins[guid].Instance;
-
+        public T LoadBundle<T>(string path) where T : UnityEngine.Object
+        {
+            return ResourceBundle.LoadAsset<T>(path);
+        }
         public Sprite Load(string path)
         {
             return ResourceBundle.LoadAsset<Sprite>(path);
