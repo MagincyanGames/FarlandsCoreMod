@@ -44,7 +44,7 @@ namespace FarlandsCoreMod.UI.Components
     public class UIMakerElementComponent : MonoBehaviour
     {
         public RElement element;
-        public void OnEnable() { if(element != null) { element.OnEnable(gameObject); }}
+        public void OnEnable() { if(element != null && element.OnEnable != null) { element.OnEnable(gameObject); }}
 
     }
 }
