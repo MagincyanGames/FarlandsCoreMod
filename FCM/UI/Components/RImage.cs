@@ -19,11 +19,23 @@ namespace FarlandsCoreMod.UI.Components
         public override Component Render()
         {
             base.Render();
-            Image img = gameObject.TryAddComponent<Image>();
+            Sprite sprite = null;
+            try
+            {
+                sprite = SpriteManager.Load(source);
+            }
+            catch 
+            {
+            }
 
-            img.sprite = SpriteManager.Load(source);
+            if (sprite != null)
+            {
+                Image img = gameObject.TryAddComponent<Image>();
+                img.sprite = sprite;
+            }
 
-            return img;
+            return gameObject.GetComponent<RectTransform>();
+
         }
     }
 }

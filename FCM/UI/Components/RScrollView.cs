@@ -54,7 +54,7 @@ namespace FarlandsCoreMod.UI.Components
             layoutGroup.childForceExpandWidth = true;
             layoutGroup.childForceExpandHeight = true;
             layoutGroup.childAlignment = TextAnchor.UpperCenter;
-            layoutGroup.spacing = 10;
+            layoutGroup.spacing = 6;
             layoutGroup.childControlWidth = false;
             layoutGroup.childControlHeight = false;
             // Configura ContentSizeFitter para que ajuste su tamaño según el contenido

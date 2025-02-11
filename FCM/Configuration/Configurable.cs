@@ -17,9 +17,9 @@ namespace FarlandsCoreMod.Configuration
             this.plugin = plugin;
         }
 
-        public void AddConfig<T>(string key, string description, T defaultValue)
+        public void AddConfig<T>(string section,string key, string description, T defaultValue)
         {
-            var config = plugin.Config.Bind("FarlandsCoreMod", key, defaultValue, description);
+            var config = plugin.Config.Bind(section, key, defaultValue, description);
             configurations.Add(key, config);
         }
         public ConfigEntryBase GetBase(string key) => GetBase(key);

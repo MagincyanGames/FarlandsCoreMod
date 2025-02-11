@@ -3,6 +3,7 @@ using CommandTerminal;
 using Farlands.Inventory;
 using Farlands.PlantSystem;
 using FarlandsCoreMod;
+using FarlandsCoreMod.Configuration;
 using FarlandsCoreMod.Extensors;
 using System.Diagnostics;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace FrancopetaMod
     {
         public void Awake()
         {
+            CONFIG.Add(this, "example", "test", "This is an test example", "test");
             Logger.LogInfo("THIS IS A TEST");
         }
 

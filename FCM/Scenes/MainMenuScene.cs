@@ -8,6 +8,8 @@ using UnityEngine;
 using FarlandsCoreMod.Utiles.GameObjects;
 using UnityEngine.UI;
 using FarlandsCoreMod.Utiles;
+using FarlandsCoreMod.Configuration;
+using SuperTiled2Unity;
 
 namespace FarlandsCoreMod.Scenes
 {
@@ -49,21 +51,41 @@ namespace FarlandsCoreMod.Scenes
             foreach(var mod in ModManager.mods)
             {
                 ui.Point("MainMenu:Canvas/Settings/ScrollView/Viewport/Content");
-                ui.RenderAndPoint(new RImage()
+                ui.RenderAndPoint(new RVerticalGroup
                 {
-                    size = new Vector2(105, 25),
-                    source = "magin.fcm:UI_36"
+                    source = "magin.fcm:UI_31",
+                    spacing = 1,
                 });
                 ui.Render(new RText()
                 {
-                    size = new Vector2(105, 25),
+                    size = new Vector2(105, 15),
                     name = $"{mod.Info.Metadata.Name}-text",
-                    text = mod.Info.Metadata.Name,
+                    text = $"<b>{mod.Info.Metadata.Name}</b>",
                     fontSize = 8,
-                    anchoredPosition = new Vector2(0, 2.5f),
+                    anchoredPosition = new Vector2(0, 0),
                     verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
                     horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
                 });
+
+                foreach (var config in CONFIG.GetConfigs(mod))
+                {
+                    string txt;
+
+                    if (config.Definition.Section.IsEmpty())
+                        txt = config.Definition.Key;
+                    else txt = config.Definition.Section + "." + config.Definition.Key;
+
+                    ui.Render(new RText()
+                    {
+                        size = new Vector2(105, 10),
+                        name = $"{config.Definition}-text",
+                        text = txt,
+                        fontSize = 6,
+                        anchoredPosition = new Vector2(0, 0),
+                        verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
+                        horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
+                    });
+                }
             }
         }
     }
