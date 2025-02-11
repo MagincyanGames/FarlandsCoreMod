@@ -29,8 +29,22 @@ namespace FarlandsCoreMod.UI.Components
         {
             gameObject = gameObjectForRender();
             gameObject.transform.SetParent(parent);
-            return Render();
+
+            var r = Render();
+            gameObject.AddComponent<UIMakerElementComponent>().element = this;
+            return r;
         }
+
+        public Action<GameObject> OnEnable;
+        public Action<GameObject> OnReload;
+
+        public void Reload() { if (OnReload != null) OnReload(gameObject); }
+    }
+
+    public class UIMakerElementComponent : MonoBehaviour
+    {
+        public RElement element;
+        public void OnEnable() { if(element != null) { element.OnEnable(gameObject); }}
 
     }
 }
