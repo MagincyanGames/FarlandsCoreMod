@@ -111,27 +111,46 @@ namespace FarlandsCoreMod.Scenes
                         verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
                         horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
                     });
-                    ui.RenderAndPoint(new RImage()
-                    {
-                        source = "magin.fcm:UI_32",
-                        size = new Vector2(50, 15),
-                    });
-                    ui.Render(new RInputText()
+                    
+
+                    if (config.SettingType == typeof(bool)) ui.Render(new RCheckmark()
                     {
                         name = $"{txt}-it",
-                        text = config.BoxedValue.ToString(),
-                        fontSize = 8,
-                        OnReload = go => go.GetComponent<TMP_InputField>().text = config.BoxedValue.ToString(),
+                        //fontSize = 10,
+                        size = new Vector2(15, 15),
+                        OnReload = go => go.GetComponent<Toggle>().isOn = (bool)config.BoxedValue,
                         OnEnable = go => go.GetComponent<UIMakerElementComponent>().element.Reload(),
-                        onEndEdit = s => {
-                            
-                            config.BoxedValue = caster(s);
+                        onValueChanged = b => {
+
+                            config.BoxedValue = b;
                             Debug.Log(config.BoxedValue);
                         },
-                        contentType = type,
-                        //fontSize = 10,
-                        size = new Vector2(50, 15)
                     });
+                    else 
+                    {
+                        ui.RenderAndPoint(new RImage()
+                        {
+                            source = "magin.fcm:UI_32",
+                            size = new Vector2(50, 15),
+                        });
+                        ui.Render(new RInputText()
+                        {
+                            name = $"{txt}-it",
+                            text = config.BoxedValue.ToString(),
+                            fontSize = 8,
+                            OnReload = go => go.GetComponent<TMP_InputField>().text = config.BoxedValue.ToString(),
+                            OnEnable = go => go.GetComponent<UIMakerElementComponent>().element.Reload(),
+                            onEndEdit = s =>
+                            {
+
+                                config.BoxedValue = caster(s);
+                                Debug.Log(config.BoxedValue);
+                            },
+                            contentType = type,
+                            //fontSize = 10,
+                            size = new Vector2(50, 15)
+                        });
+                    }
                 }
             }
         }

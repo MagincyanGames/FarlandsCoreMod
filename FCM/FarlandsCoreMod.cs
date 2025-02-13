@@ -33,7 +33,7 @@ namespace FarlandsCoreMod
 
         public void Awake()
         {
-            CONFIG.Add(this,"","test", "This is a test", 0);
+            CONFIG.Add(this,"","test", "This is a test", false);
             harmony.PatchAll();
             Instance = this;
             ResourceBundle = AssetBundle.LoadFromFile(Paths.Plugin + "/fcm_bundle");
