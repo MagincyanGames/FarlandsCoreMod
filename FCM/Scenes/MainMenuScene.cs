@@ -99,7 +99,7 @@ namespace FarlandsCoreMod.Scenes
                         {
                             return int.Parse(s);
                         }
-                        return null;
+                        return s;
                     };
 
                     ui.Render(new RText()
@@ -142,7 +142,6 @@ namespace FarlandsCoreMod.Scenes
                             OnEnable = go => go.GetComponent<UIMakerElementComponent>().element.Reload(),
                             onEndEdit = s =>
                             {
-
                                 config.BoxedValue = caster(s);
                                 Debug.Log(config.BoxedValue);
                             },
