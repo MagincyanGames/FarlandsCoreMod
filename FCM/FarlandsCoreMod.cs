@@ -33,7 +33,7 @@ namespace FarlandsCoreMod
 
         public void Awake()
         {
-            CONFIG.Add(this,"","test", "This is a test", false);
+            CONFIG.Add(this,"Debug","SkipIntro", "If true, the intro will be skipped", false);
             harmony.PatchAll();
             Instance = this;
             ResourceBundle = AssetBundle.LoadFromFile(Paths.Plugin + "/fcm_bundle");
@@ -49,13 +49,17 @@ namespace FarlandsCoreMod
         {
             
             Instance.Logger.LogInfo("JANDUUUU");
-            Instance.onjandu  = Instance.StartCoroutine(Instance.onJanduSoft());
+            if(CONFIG.Get<bool>("magin.fcm:Debug/SkipIntro"))
+                SceneManager.LoadScene("PreloadScene");
+            else Instance.onjandu  = Instance.StartCoroutine(Instance.onJanduSoft());
         }
         [OnUnloadScene("JanduSoftLogoScene")]
         public static void OnJanduSoftSceneUnload()
         {
             Instance.Logger.LogInfo("SOFTTTTT");
-            Instance.StopCoroutine(Instance.onjandu);
+
+            if (!CONFIG.Get<bool>("magin.fcm:Debug/SkipIntro"))
+                Instance.StopCoroutine(Instance.onjandu);
         }
 
         private IEnumerator onJanduSoft()

@@ -117,7 +117,7 @@ namespace FarlandsCoreMod.Scenes
                     {
                         name = $"{txt}-it",
                         //fontSize = 10,
-                        size = new Vector2(15, 15),
+                        size = new Vector2(10, 10),
                         OnReload = go => go.GetComponent<Toggle>().isOn = (bool)config.BoxedValue,
                         OnEnable = go => go.GetComponent<UIMakerElementComponent>().element.Reload(),
                         onValueChanged = b => {

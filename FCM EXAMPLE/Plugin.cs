@@ -16,6 +16,9 @@ namespace FrancopetaMod
         public void Awake()
         {
             CONFIG.Add(this, "example", "test", "This is an test example", "test");
+            CONFIG.Add(this, "example", "2", "This is an test example", "test");
+            CONFIG.Add(this, "example", "3", "This is an test example", "test");
+            CONFIG.Add(this, "example", "4", "This is an test example", "test");
             Logger.LogInfo("THIS IS A TEST");
         }
 

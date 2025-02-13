@@ -20,9 +20,9 @@ namespace FarlandsCoreMod.Configuration
         public void AddConfig<T>(string section,string key, string description, T defaultValue)
         {
             var config = plugin.Config.Bind(section, key, defaultValue, description);
-            configurations.Add(key, config);
+            configurations.Add($"{section}/{key}", config);
         }
-        public ConfigEntryBase GetBase(string key) => GetBase(key);
+        public ConfigEntryBase GetBase(string key) => configurations[key];
         public object GetConfig(string key) => GetBase(key).BoxedValue;
 
         public T GetConfig<T>(string key) => (T)GetConfig(key);
