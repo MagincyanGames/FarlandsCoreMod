@@ -15,10 +15,10 @@ namespace FrancopetaMod
     {
         public void Awake()
         {
-            CONFIG.Add(this, "example", "test", "This is an test example", "test");
-            CONFIG.Add(this, "example", "2", "This is an test example", "test");
-            CONFIG.Add(this, "example", "3", "This is an test example", "test");
-            CONFIG.Add(this, "example", "4", "This is an test example", "test");
+            CONFIG.Add(this, "example", "1test", "This is an test example", "test");
+            CONFIG.Add(this, "example", "2test", "This is an test example", true);
+            CONFIG.Add(this, "nonexample", "1test", "This is an test example", "notest");
+            CONFIG.Add(this, "nonexample", "2test", "This is an test example", false);
             Logger.LogInfo("THIS IS A TEST");
         }
 

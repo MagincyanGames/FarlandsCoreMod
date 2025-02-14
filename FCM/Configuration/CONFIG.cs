@@ -40,6 +40,7 @@ namespace FarlandsCoreMod.Configuration
         }
 
         public static List<ConfigEntryBase> GetConfigs(BaseUnityPlugin plugin) => GetConfigurable(plugin).GetConfigs();
+        public static Dictionary<string, List<ConfigEntryBase>> GetConfigsBySection(BaseUnityPlugin plugin) => GetConfigurable(plugin).GetConfigsBySection();
 
     }
 }

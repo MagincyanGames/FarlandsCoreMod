@@ -16,6 +16,7 @@ namespace FarlandsCoreMod.UI.Components
     {
         public override string type => "image";
         public Utiles.Path source;
+        public Color? color;
         public override Component Render()
         {
             base.Render();
@@ -32,6 +33,7 @@ namespace FarlandsCoreMod.UI.Components
             {
                 Image img = gameObject.TryAddComponent<Image>();
                 img.sprite = sprite;
+                if (color.HasValue) img.color = color.Value;
             }
 
             return gameObject.GetComponent<RectTransform>();

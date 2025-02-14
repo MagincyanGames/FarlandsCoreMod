@@ -12,7 +12,7 @@ namespace FarlandsCoreMod.UI.Components
         // Cambié el tipo a "horizontalGroup" en lugar de "verticalGroup"
         public override string type => "horizontalGroup";
         public float? spacing;  // Espaciado entre los elementos
-
+        public bool? childExpandHeight;  // Expandir la altura de los elementos
         public override Component Render()
         {
             base.Render();
@@ -31,7 +31,7 @@ namespace FarlandsCoreMod.UI.Components
             // Configura el HorizontalLayoutGroup
             var layoutGroup = gameObject.GetComponent<HorizontalLayoutGroup>();
             layoutGroup.childForceExpandWidth = false;   // Evitar que los elementos se expandan
-            layoutGroup.childForceExpandHeight = true;  // Evitar que los elementos se expandan en altura
+            if (childExpandHeight.HasValue) layoutGroup.childForceExpandHeight = childExpandHeight.Value;  // Evitar que los elementos se expandan en altura
             layoutGroup.childAlignment = TextAnchor.MiddleCenter;  // Alineación centrada
             if (spacing != null) layoutGroup.spacing = spacing.Value; // Asignar el espaciado si se ha dado
 
