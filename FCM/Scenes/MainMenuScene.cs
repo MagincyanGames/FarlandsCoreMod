@@ -60,7 +60,7 @@ namespace FarlandsCoreMod.Scenes
                 {
                     name = $"{mod.Info.Metadata.Name}-group",
                     source = "magin.fcm:UI_31",
-                    spacing = 1,
+                    spacing = 6,
                 };
 
                 ui.RenderAndPoint(group);
