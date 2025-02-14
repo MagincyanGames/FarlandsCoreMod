@@ -14,15 +14,22 @@ using TMPro;
 using Unity.VisualScripting.FullSerializer;
 using static System.Net.Mime.MediaTypeNames;
 using Application = UnityEngine.Application;
+using BepInEx;
+using static FarlandsCoreMod.Utiles.Sprites.SpriteManager.Sprites;
+using System.Linq;
+using BepInEx.Configuration;
+using static System.Collections.Specialized.BitVector32;
 
 namespace FarlandsCoreMod.Scenes
 {
     public class MainMenuScene
     {
+        private static UIMaker ui;
+
         [OnLoadScene("MainMenu")]
         public static void OnLoadMainMenu()
         {
-            UIMaker ui = new();
+            ui = new();
             ui.Point("MainMenu:Canvas/MenuSpace/MainMenu");
             ui.Render(new RButton()
             {
@@ -52,142 +59,151 @@ namespace FarlandsCoreMod.Scenes
                 anchoredPosition = new Vector2(204, 16),
                 source = "magin.fcm:UI_24"
             });
-            foreach(var mod in ModManager.mods)
+
+            ModManager.mods.ForEach(rederForMod);
+        }
+
+        private static RVerticalGroup group;
+        private static void rederForMod(BaseUnityPlugin mod)
+        {
+            ui.Point("MainMenu:Canvas/Settings/ScrollView/Viewport/Content");
+
+            group = new RVerticalGroup
             {
-                ui.Point("MainMenu:Canvas/Settings/ScrollView/Viewport/Content");
+                name = $"{mod.Info.Metadata.Name}-group",
+                source = "magin.fcm:UI_31",
+                spacing = 6,
+            };
 
-                var group = new RVerticalGroup
+            ui.RenderAndPoint(group);
+            ui.Render(new RText()
+            {
+                size = new Vector2(105, 15),
+                name = $"{mod.Info.Metadata.Name}-text",
+                text = $"<b>{mod.Info.Metadata.Name}</b>",
+                fontSize = 8,
+                anchoredPosition = new Vector2(0, 0),
+                verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
+                horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
+            });
+            CONFIG.GetConfigsBySection(mod).ToList().ForEach(renderForSection);
+
+        }
+        private static RVerticalGroup sectionGroup;
+
+        private static void renderForSection(KeyValuePair<string, List<ConfigEntryBase>> section)
+        {
+            Debug.Log(section.Key);
+            ui.Point(group.gameObject);
+            sectionGroup = new RVerticalGroup
+            {
+                name = $"{section.Key}-vg",
+                size = new Vector2(90, 150),
+                anchoredPosition = new Vector2(0, 0),
+                spacing = 2,
+                source = "magin.fcm:UI_31",
+                color = new Color(0, 0, 0, 0.5f)
+
+            };
+            ui.RenderAndPoint(sectionGroup);
+
+            ui.Render(new RText()
+            {
+                name = $"{section.Key}-text",
+                text = $"[{section.Key}]",
+                size = new Vector2(30, 15),
+                anchoredPosition = new Vector2(0, 0),
+                fontSize = 7,
+                verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
+                horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
+            });
+
+            section.Value.ForEach(renderForConfig);
+        }
+
+        private static void renderForConfig(ConfigEntryBase config)
+        {
+            ui.Point(sectionGroup.gameObject);
+            string txt;
+            TMP_InputField.ContentType type = TMP_InputField.ContentType.Standard;
+            if (config.SettingType == typeof(int)) type = TMP_InputField.ContentType.IntegerNumber;
+            if (config.SettingType == typeof(float)) type = TMP_InputField.ContentType.DecimalNumber;
+
+            txt = config.Definition.Key;
+
+            ui.RenderAndPoint(new RHorizontalGroup
+            {
+                name = $"{config.Definition}-hg",
+                size = new Vector2(105, 20),
+                anchoredPosition = new Vector2(0, 0),
+                spacing = 5,
+                childExpandHeight = false,
+                source = null
+
+            });
+
+            Func<string, object> caster = (string s) =>
+            {
+                if (type == TMP_InputField.ContentType.IntegerNumber)
                 {
-                    name = $"{mod.Info.Metadata.Name}-group",
-                    source = "magin.fcm:UI_31",
-                    spacing = 6,
-                };
-
-                ui.RenderAndPoint(group);
-                ui.Render(new RText()
-                {
-                    size = new Vector2(105, 15),
-                    name = $"{mod.Info.Metadata.Name}-text",
-                    text = $"<b>{mod.Info.Metadata.Name}</b>",
-                    fontSize = 8,
-                    anchoredPosition = new Vector2(0, 0),
-                    verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
-                    horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
-                });
-
-                foreach (var section in CONFIG.GetConfigsBySection(mod))
-                {
-                    Debug.Log(section.Key);
-                    ui.Point(group.gameObject);
-                    var sectionGroup = new RVerticalGroup
-                    {
-                        name = $"{section.Key}-vg",
-                        size = new Vector2(90, 150),
-                        anchoredPosition = new Vector2(0, 0),
-                        spacing = 2,
-                        source = "magin.fcm:UI_31",
-                        color = new Color(0, 0, 0, 0.5f)
-
-                    };
-                    ui.RenderAndPoint(sectionGroup);
-
-                    ui.Render(new RText()
-                    {
-                        name = $"{section.Key}-text",
-                        text = $"[{section.Key}]",
-                        size = new Vector2(30, 15),
-                        anchoredPosition = new Vector2(0, 0),
-                        fontSize = 7,
-                        verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
-                        horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
-                    });
-
-                    foreach (var config in section.Value)
-                    {
-                        ui.Point(sectionGroup.gameObject);
-                        string txt;
-                        TMP_InputField.ContentType type = TMP_InputField.ContentType.Standard;
-                        if (config.SettingType == typeof(int)) type = TMP_InputField.ContentType.IntegerNumber;
-                        if (config.SettingType == typeof(float)) type = TMP_InputField.ContentType.DecimalNumber;
-
-                        txt = config.Definition.Key;
-
-                        ui.RenderAndPoint(new RHorizontalGroup
-                        {
-                            name = $"{config.Definition}-hg",
-                            size = new Vector2(105, 20),
-                            anchoredPosition = new Vector2(0, 0),
-                            spacing = 5,
-                            childExpandHeight = false,
-                            source = null
-
-                        });
-
-                        Func<string, object> caster = (string s) =>
-                        {
-                            if (type == TMP_InputField.ContentType.IntegerNumber)
-                            {
-                                return int.Parse(s);
-                            }
-                            return s;
-                        };
-
-                        ui.Render(new RText()
-                        {
-                            name = $"{txt}-text",
-                            text = txt,
-                            size = new Vector2(30, 10),
-                            fontSize = 7,
-                            verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
-                            horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
-                        });
-
-
-
-                        if (config.SettingType == typeof(bool)) 
-                        {
-
-                            ui.Render(new RCheckmark()
-                            {
-                                name = $"{txt}-it",
-                                //fontSize = 10,
-                                size = new Vector2(10, 10),
-                                OnReload = go => go.GetComponent<Toggle>().isOn = (bool)config.BoxedValue,
-                                OnEnable = go => go.GetComponent<UIMakerElementComponent>().element.Reload(),
-                                onValueChanged = b =>
-                                {
-
-                                    config.BoxedValue = b;
-                                    Debug.Log(config.BoxedValue);
-                                },
-                            });
-                        }
-                        else
-                        {
-                            ui.RenderAndPoint(new RImage()
-                            {
-                                source = "magin.fcm:UI_32",
-                                size = new Vector2(50, 10),
-                            });
-                            ui.Render(new RInputText()
-                            {
-                                name = $"{txt}-it",
-                                text = config.BoxedValue.ToString(),
-                                fontSize = 8,
-                                OnReload = go => go.GetComponent<TMP_InputField>().text = config.BoxedValue.ToString(),
-                                OnEnable = go => go.GetComponent<UIMakerElementComponent>().element.Reload(),
-                                onEndEdit = s =>
-                                {
-                                    config.BoxedValue = caster(s);
-                                    Debug.Log(config.BoxedValue);
-                                },
-                                contentType = type,
-                                //fontSize = 10,
-                                size = new Vector2(50, 10)
-                            });
-                        }
-                    }
+                    return int.Parse(s);
                 }
+                return s;
+            };
+
+            ui.Render(new RText()
+            {
+                name = $"{txt}-text",
+                text = txt,
+                size = new Vector2(30, 10),
+                fontSize = 7,
+                verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
+                horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
+            });
+
+
+
+            if (config.SettingType == typeof(bool))
+            {
+
+                ui.Render(new RCheckmark()
+                {
+                    name = $"{txt}-it",
+                    //fontSize = 10,
+                    size = new Vector2(10, 10),
+                    OnReload = go => go.GetComponent<Toggle>().isOn = (bool)config.BoxedValue,
+                    OnEnable = go => go.GetComponent<UIMakerElementComponent>().element.Reload(),
+                    onValueChanged = b =>
+                    {
+
+                        config.BoxedValue = b;
+                        Debug.Log(config.BoxedValue);
+                    },
+                });
+            }
+            else
+            {
+                ui.RenderAndPoint(new RImage()
+                {
+                    source = "magin.fcm:UI_32",
+                    size = new Vector2(50, 10),
+                });
+                ui.Render(new RInputText()
+                {
+                    name = $"{txt}-it",
+                    text = config.BoxedValue.ToString(),
+                    fontSize = 8,
+                    OnReload = go => go.GetComponent<TMP_InputField>().text = config.BoxedValue.ToString(),
+                    OnEnable = go => go.GetComponent<UIMakerElementComponent>().element.Reload(),
+                    onEndEdit = s =>
+                    {
+                        config.BoxedValue = caster(s);
+                        Debug.Log(config.BoxedValue);
+                    },
+                    contentType = type,
+                    //fontSize = 10,
+                    size = new Vector2(50, 10)
+                });
             }
         }
     }
