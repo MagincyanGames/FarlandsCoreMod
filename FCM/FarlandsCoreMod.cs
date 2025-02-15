@@ -20,15 +20,17 @@ using Unity.VisualScripting;
 using FarlandsCoreMod.Configuration;
 using FarlandsCoreMod.Utiles;
 using CommandTerminal;
+using PixelCrushers.DialogueSystem.Articy.Articy_1_4;
+using FarlandsCoreMod.Utiles.AssetBundles;
 
 namespace FarlandsCoreMod
 {
     [BepInPlugin("magin.fcm", "FarlandsCoreMod", FCMInfo.Version)]
-    public class FarlandsCoreMod : BaseUnityPlugin, ISpriteLoader
+    public class FarlandsCoreMod : BaseUnityPlugin, IMod
     {
         public static FarlandsCoreMod Instance;
         public static BepInPlugin Metadata => Instance.Info.Metadata;
-        public AssetBundle ResourceBundle { get; private set; }
+        public AssetBundle ResourceBundle = AssetBundle.LoadFromFile(Paths.Plugin + "/fcm_bundle");
         public Harmony harmony = new Harmony("magin.fcm");
 
         public void Awake()
@@ -36,12 +38,18 @@ namespace FarlandsCoreMod
             CONFIG.Add(this,"Debug","SkipIntro", "If true, the intro will be skipped", false);
             harmony.PatchAll();
             Instance = this;
-            ResourceBundle = AssetBundle.LoadFromFile(Paths.Plugin + "/fcm_bundle");
 
-            SceneLoader(new(typeof(FarlandsCoreMod), typeof (MainMenuScene)));
+            SceneLoader(typeof(FarlandsCoreMod), typeof (MainMenuScene));
         }
 
-        
+        public void Start()
+        {
+            this.AddComponent<Terminal>();
+        }
+
+        public void Update()
+        {
+        }
 
         Coroutine onjandu = null;
         [OnLoadScene("JanduSoftLogoScene")]
@@ -76,19 +84,17 @@ namespace FarlandsCoreMod
             }
         }
 
-        public void Start()
-        {
-            this.AddComponent<Terminal>();
-        }
 
         public List<PluginInfo> LoadedMods => UnityChainloader.Instance.Plugins.Values.Where(x => x.Metadata.GUID != Metadata.GUID).ToList();
+
+        AssetBundle IBundleLoader.ResourceBundle => throw new NotImplementedException();
 
         public BaseUnityPlugin GetPlugin(string guid) => (BaseUnityPlugin) UnityChainloader.Instance.Plugins[guid].Instance;
         public T LoadBundle<T>(string path) where T : UnityEngine.Object
         {
             return ResourceBundle.LoadAsset<T>(path);
         }
-        public Sprite Load(string path)
+        public Sprite LoadSprite(string path)
         {
             return ResourceBundle.LoadAsset<Sprite>(path);
         }
@@ -96,10 +102,15 @@ namespace FarlandsCoreMod
         {
             sceneLoader.Load();
         }
-
+        public void SceneLoader(params List<Type> types)
+        {
+            types.ForEach(x => SceneLoader(new SceneLoader(x)));
+        }
         public void OnLoadScene(Action<Scene, LoadSceneMode> action)
         { 
             SceneManager.sceneLoaded += new (action);
         }
+
+        
     }
 }

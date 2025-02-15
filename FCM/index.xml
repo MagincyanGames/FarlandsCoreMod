@@ -4,17 +4,6 @@
         <name>FarlandsCoreMod</name>
     </assembly>
     <members>
-        <member name="M:CommandTerminal.CommandShell.RegisterCommands">
-            <summary>
-            Uses reflection to find all RegisterCommand attributes
-            and adds them to the commands dictionary.
-            </summary>
-        </member>
-        <member name="M:CommandTerminal.CommandShell.RunCommand(System.String)">
-            <summary>
-            Parses an input line into a command and runs that command.
-            </summary>
-        </member>
         <member name="T:FarlandsCoreMod.Properties.Resources">
             <summary>
               Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
@@ -39,6 +28,17 @@
         <member name="P:FarlandsCoreMod.Properties.Resources.Version">
             <summary>
               Busca una cadena traducida similar a 0.1.3.
+            </summary>
+        </member>
+        <member name="M:CommandTerminal.CommandShell.RegisterCommands">
+            <summary>
+            Uses reflection to find all RegisterCommand attributes
+            and adds them to the commands dictionary.
+            </summary>
+        </member>
+        <member name="M:CommandTerminal.CommandShell.RunCommand(System.String)">
+            <summary>
+            Parses an input line into a command and runs that command.
             </summary>
         </member>
     </members>

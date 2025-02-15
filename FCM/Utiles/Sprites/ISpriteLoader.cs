@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace FarlandsCoreMod.Utiles.Sprites
 {
-    internal interface ISpriteLoader
+    public interface ISpriteLoader
     {
-        public Sprite Load(string path);
+        public Sprite LoadSprite(string path);
     }
 }

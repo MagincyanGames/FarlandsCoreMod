@@ -27,7 +27,7 @@ namespace FarlandsCoreMod.Utiles.Sprites
                 if (path.StartsWith("$")) return Resources.InstanceIDToObject(int.Parse(path.Substring(1))) as Sprite;
                 return Resources.Load<Sprite>(path); 
             }
-            if (Mod is ISpriteLoader spriteLoader) return spriteLoader.Load(path);
+            if (Mod is ISpriteLoader spriteLoader) return spriteLoader.LoadSprite(path);
 
             return null;
         }
