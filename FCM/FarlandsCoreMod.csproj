@@ -18,6 +18,10 @@
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="fcminfo.tt" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <None Include="fcminfo.cs">
@@ -162,6 +166,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Page Include="fcminfo.tt" />
   </ItemGroup>
 
 
@@ -553,6 +562,11 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Compile Update="fcminfo.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>fcminfo.tt</DependentUpon>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -570,14 +584,15 @@
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <T4ParameterValues Include="Version">
-      <Value>$(Version)</Value>
-      <Visible>false</Visible>
-    </T4ParameterValues>
-  </ItemGroup>
-  
+
+  <Target Name="TransformT4Templates" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <T4Template>$(ProjectDir)fcminfo.tt</T4Template>
+    </PropertyGroup>
+    <Exec Command="&quot;$(DevEnvDir)TextTransform.exe&quot; &quot;$(T4Template)&quot;" />
+  </Target>
+
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="&#xD;&#xA;del &quot;$(TargetDir)..\FCM_$(Version).zip&quot;&#xD;&#xA;powershell -Command &quot;Compress-Archive -Path '$(TargetDir)FarlandsCoreMod.dll', '$(TargetDir)..\..\..\..\Tools\fcm_bundle', '$(TargetDir)MoonSharp.Interpreter.dll' -DestinationPath '$(TargetDir)..\FCM_$(Version).zip'&quot;" />
   </Target>
