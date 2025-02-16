@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FarlandsCoreMod;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -15,6 +16,7 @@ class Program
         bool debug = true;
 
         // NO TOCAR
+        bool fcmLocal = true;
         bool copy = true;
         bool zip = true;
 
@@ -55,67 +57,12 @@ class Program
             CopyDirectory(farlandsPath, destinationPath);
         }
 
-        string bepinexUrl = "https://github.com/BepInEx/BepInEx/releases/download/v6.0.0-pre.1/BepInEx_UnityMono_x64_6.0.0-pre.1.zip";
-        string bepinexZipPath = Path.Combine(Path.GetTempPath(), "BepInEx.zip");
-        string bepinexExtractPath = Path.Combine(destinationPath, "BepInEx", "core");
+        string destinationPlugins = Path.Combine(destinationPath, "BepInEx", "plugins");
+        DownloadBepInEx(destinationPath);
 
-        if (!Directory.Exists(bepinexExtractPath))
-        {
-            Console.WriteLine($"Descargando BepInEx desde {bepinexUrl}...");
-            using (var client = new WebClient())
-            {
-                client.DownloadFile(bepinexUrl, bepinexZipPath);
-            }
+        if (fcmLocal) CopyFCM(destinationPath, destinationPlugins);
+        else DownloadFCM(destinationPlugins);
 
-            Console.WriteLine($"Extrayendo BepInEx a {destinationPath}...");
-            ZipFile.ExtractToDirectory(bepinexZipPath, destinationPath, true);
-
-            // Eliminar el archivo ZIP descargado
-            File.Delete(bepinexZipPath);
-        }
-        else
-        {
-            Console.WriteLine("BepInEx ya está instalado.");
-        }
-
-
-        // Buscar el archivo ZIP en el proyecto principal
-        string sourceDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "FCM", "bin", "Debug");
-        string zipPattern = "FCM_*.zip";
-        string[] zipFiles = Directory.GetFiles(sourceDir, zipPattern);
-
-        if (zipFiles.Length == 0)
-        {
-            Console.WriteLine($"Error: No se encontró ningún archivo que coincida con el patrón {zipPattern} en {sourceDir}.");
-            return;
-        }
-
-        // Seleccionar el archivo ZIP con la mayor versión
-        string sourceZipPath = zipFiles
-            .Select(file => new { File = file, Version = GetVersionFromFileName(file) })
-            .OrderByDescending(x => x.Version)
-            .First().File;
-
-        string destinationExtractPath = Path.Combine(destinationPath, "BepInEx", "plugins");
-
-        // Crear la carpeta de destino si no existe
-        Directory.CreateDirectory(destinationExtractPath);
-
-        // Extraer el archivo ZIP a un directorio temporal
-        string tempExtractPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-        Directory.CreateDirectory(tempExtractPath);
-        Console.WriteLine($"Extrayendo {sourceZipPath} a {tempExtractPath}...");
-        ZipFile.ExtractToDirectory(sourceZipPath, tempExtractPath);
-
-        // Copiar archivos del directorio temporal al destino, sobrescribiendo los existentes
-        Console.WriteLine($"Copiando archivos desde {tempExtractPath} a {destinationExtractPath}...");
-        CopyDirectory(tempExtractPath, destinationExtractPath);
-
-        // Eliminar el directorio temporal
-        Directory.Delete(tempExtractPath, true);
-
-        // Descargar y descomprimir BepInEx si no está instalado
-        
         // Copiar mono-2.0-bdwgc.dll si debug es true
         if (debug)
         {
@@ -135,7 +82,7 @@ class Program
 
             // Copiar la carpeta sinai-dev-UnityExplorer
             string sinaiSourcePath = Path.Combine(toolsPath, "sinai-dev-UnityExplorer");
-            string sinaiDestinationPath = Path.Combine(destinationExtractPath, "sinai-dev-UnityExplorer");
+            string sinaiDestinationPath = Path.Combine(destinationPlugins, "sinai-dev-UnityExplorer");
 
             if (Directory.Exists(sinaiSourcePath))
             {
@@ -162,7 +109,99 @@ class Program
             Console.WriteLine($"Error: No se encontró {farlandsExePath}.");
         }
     }
+    static void DownloadBepInEx(string destinationPath)
+    {
+        string bepinexUrl = "https://github.com/BepInEx/BepInEx/releases/download/v6.0.0-pre.1/BepInEx_UnityMono_x64_6.0.0-pre.1.zip";
+        string bepinexZipPath = Path.Combine(Path.GetTempPath(), "BepInEx.zip");
+        string bepinexExtractPath = Path.Combine(destinationPath, "BepInEx", "core");
 
+        if (!Directory.Exists(bepinexExtractPath))
+        {
+            Console.WriteLine($"Descargando BepInEx desde {bepinexUrl}...");
+            using (var client = new WebClient())
+            {
+                client.DownloadFile(bepinexUrl, bepinexZipPath);
+            }
+
+            Console.WriteLine($"Extrayendo BepInEx a {destinationPath}...");
+            ZipFile.ExtractToDirectory(bepinexZipPath, destinationPath, true);
+
+            // Eliminar el archivo ZIP descargado
+            File.Delete(bepinexZipPath);
+        }
+        else
+        {
+            Console.WriteLine("BepInEx ya está instalado.");
+        }
+    }
+    static void CopyFCM(string destinationPath, string destinationPlugins)
+    {
+        // Buscar el archivo ZIP en el proyecto principal
+        string sourceDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", "FCM", "bin", "Debug");
+        string zipPattern = "FCM_*.zip";
+        string[] zipFiles = Directory.GetFiles(sourceDir, zipPattern);
+
+        if (zipFiles.Length == 0)
+        {
+            Console.WriteLine($"Error: No se encontró ningún archivo que coincida con el patrón {zipPattern} en {sourceDir}.");
+            return;
+        }
+
+        // Seleccionar el archivo ZIP con la mayor versión
+        string sourceZipPath = zipFiles
+            .Select(file => new { File = file, Version = GetVersionFromFileName(file) })
+            .OrderByDescending(x => x.Version)
+            .First().File;
+
+        
+
+        // Crear la carpeta de destino si no existe
+        Directory.CreateDirectory(destinationPlugins);
+
+        // Extraer el archivo ZIP a un directorio temporal
+        string tempExtractPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        Directory.CreateDirectory(tempExtractPath);
+        Console.WriteLine($"Extrayendo {sourceZipPath} a {tempExtractPath}...");
+        ZipFile.ExtractToDirectory(sourceZipPath, tempExtractPath);
+
+        // Copiar archivos del directorio temporal al destino, sobrescribiendo los existentes
+        Console.WriteLine($"Copiando archivos desde {tempExtractPath} a {destinationPlugins}...");
+        CopyDirectory(tempExtractPath, destinationPlugins);
+
+        // Eliminar el directorio temporal
+        Directory.Delete(tempExtractPath, true);
+    }
+    static void DownloadFCM(string destinationPlugins)
+    {
+        string fcmUrl = $"https://farlands-geturl.maginciangeneral.workers.dev?mod=magin.fcm&version={FCMInfo.Version}";
+        Console.WriteLine($"Obteniendo {fcmUrl}...");
+
+        string zipPath = Path.Combine(Path.GetTempPath(), "FCM.zip");
+
+        using (var client = new WebClient())
+        {
+            var uri = client.DownloadString(fcmUrl);
+            Console.WriteLine($"Uri obtenida: {uri}");
+            client.DownloadFile(uri, zipPath);
+        }
+        Console.WriteLine($"Descargado FCM en {zipPath}");
+
+        // Crear la carpeta de destino si no existe
+        Directory.CreateDirectory(destinationPlugins);
+
+        // Extraer el archivo ZIP a un directorio temporal
+        string tempExtractPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        Directory.CreateDirectory(tempExtractPath);
+        Console.WriteLine($"Extrayendo {zipPath} a {tempExtractPath}...");
+        ZipFile.ExtractToDirectory(zipPath, tempExtractPath);
+
+        // Copiar archivos del directorio temporal al destino, sobrescribiendo los existentes
+        Console.WriteLine($"Copiando archivos desde {tempExtractPath} a {destinationPlugins}...");
+        CopyDirectory(tempExtractPath, destinationPlugins);
+
+        // Eliminar el directorio temporal
+        Directory.Delete(tempExtractPath, true);
+    }
     static void CopyDirectory(string sourceDir, string destinationDir)
     {
         Directory.CreateDirectory(destinationDir);
