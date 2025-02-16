@@ -52,15 +52,21 @@ namespace FarlandsCoreMod
         {
         }
 
+        private static void SkipIntro()
+        {
+            if (CONFIG.Get<bool>("magin.fcm:Debug/SkipIntro"))
+                SceneManager.LoadScene("PreloadScene");
+        }
+
         Coroutine onjandu = null;
         [OnLoadScene("JanduSoftLogoScene")]
         public static void OnJanduSoftScene()
         {
             
             Instance.Logger.LogInfo("JANDUUUU");
-            if(CONFIG.Get<bool>("magin.fcm:Debug/SkipIntro"))
-                SceneManager.LoadScene("PreloadScene");
-            else Instance.onjandu  = Instance.StartCoroutine(Instance.onJanduSoft());
+            if (CONFIG.Get<bool>("magin.fcm:Debug/SkipIntro"))
+                SkipIntro();
+            else Instance.onjandu = Instance.StartCoroutine(Instance.onJanduSoft());
         }
         [OnUnloadScene("JanduSoftLogoScene")]
         public static void OnJanduSoftSceneUnload()
@@ -80,7 +86,7 @@ namespace FarlandsCoreMod
                 if (!string.IsNullOrEmpty(Input.inputString))
                 {
                     Instance.Logger.LogInfo("unu");
-                    SceneManager.LoadScene("PreloadScene");
+                    SkipIntro();
                 }
             }
         }
