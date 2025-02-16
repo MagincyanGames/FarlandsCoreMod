@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.2.0.7</Version>
+    <Version>0.2.0.8</Version>
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>FarlandsCoreMod</AssemblyName>
     <Description>Simplify Modding for Farlands</Description>
@@ -19,16 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="fcminfo.tt" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <None Include="fcminfo.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>fcminfo.tt</DependentUpon>
-    </None>
     <None Include="lib\0Harmony.dll" Pack="true" PackagePath="lib\netstandard2.1\" />
     <None Include="lib\Assembly-CSharp.dll" Pack="true" PackagePath="lib\netstandard2.1\" />
     <None Include="lib\Assembly-CSharp-firstpass.dll" Pack="true" PackagePath="lib\netstandard2.1\" />
@@ -561,18 +551,7 @@
     </Reference>
   </ItemGroup>
   
-  <ItemGroup>
-    <Compile Update="fcminfo.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>fcminfo.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+  
   
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">

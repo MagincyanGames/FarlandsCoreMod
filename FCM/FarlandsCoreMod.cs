@@ -35,6 +35,7 @@ namespace FarlandsCoreMod
 
         public void Awake()
         {
+            Logger.LogInfo($"FarlandsCoreMod {FCMInfo.Version}");
             CONFIG.Add(this,"Debug","SkipIntro", "If true, the intro will be skipped", false);
             harmony.PatchAll();
             Instance = this;
