@@ -17,6 +17,11 @@ namespace FarlandsCoreMod.UI
             this.point = GameObjects.Find(path).transform;
             return this;
         }
+        public UIMaker Point(RElement point)
+        {
+            this.point = point.SubPoint();
+            return this;
+        }
         public UIMaker Point(GameObject point)
         {
             this.point = point.transform;
@@ -31,6 +36,20 @@ namespace FarlandsCoreMod.UI
         {
             var render = element.RenderElement(point);
             this.point = element.SubPoint();
+            return this;
+        }
+        public UIMaker RenderAgainAndPoint(RElement element)
+        {
+            var render = RenderAgain(element);
+            this.point = element.SubPoint();
+
+            return this;
+        }
+        public UIMaker RenderAgain(RElement element)
+        {
+            GameObject.DestroyImmediate(element.gameObject);
+            Render(element);
+
             return this;
         }
     }

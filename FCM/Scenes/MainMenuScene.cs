@@ -19,18 +19,22 @@ using static FarlandsCoreMod.Utiles.Sprites.SpriteManager.Sprites;
 using System.Linq;
 using BepInEx.Configuration;
 using static System.Collections.Specialized.BitVector32;
+using static Unity.VisualScripting.Member;
+using System.Drawing;
 
 namespace FarlandsCoreMod.Scenes
 {
     public class MainMenuScene
     {
         private static UIMaker ui;
+        private static BaseUnityPlugin selectedMod;
 
         [OnLoadScene("MainMenu")]
         public static void OnLoadMainMenu()
         {
             ui = new();
             ui.Point("MainMenu:Canvas/MenuSpace/MainMenu");
+            
             ui.Render(new RButton()
             {
                 anchoredPosition = new Vector2(-4.8f, -60f),
@@ -45,37 +49,37 @@ namespace FarlandsCoreMod.Scenes
 
             });
             ui.Point("MainMenu:Canvas/Settings");
-            ui.Render(new RScrollView()
+            ui.RenderAndPoint(new RImage()
             {
-                name = "ScrollView",
-                horizontal = false,
-                vertical = true,
-                movementType = ScrollRect.MovementType.Clamped,
-                elasticity = 0.1f,
-                inertia = true,
-                decelerationRate = 0.135f,
-                scrollSensitivity = 10f,
-                size = new Vector2(150, 125),
-                anchoredPosition = new Vector2(204, 16),
-                source = "magin.fcm:UI_24"
+                name = "Mods",
+                size = new Vector2(150, 100),
+                anchoredPosition = new Vector2(205, 12),
+                source = "magin.fcm:UI_31",
             });
 
+            renderContent();
+
+            ui.Point("MainMenu:Canvas/Settings/Mods");
+            ui.Render(Sidebar);
+            
             ModManager.mods.ForEach(rederForMod);
         }
 
-        private static RVerticalGroup group;
         private static void rederForMod(BaseUnityPlugin mod)
         {
-            ui.Point("MainMenu:Canvas/Settings/ScrollView/Viewport/Content");
+            ui.Point(Sidebar);
+            Debug.Log(mod.Info.Metadata.GUID);
 
-            group = new RVerticalGroup
+            ui.RenderAndPoint(new RButton()
             {
-                name = $"{mod.Info.Metadata.Name}-group",
+                size = new Vector2(105, 15),
                 source = "magin.fcm:UI_31",
-                spacing = 6,
-            };
-
-            ui.RenderAndPoint(group);
+                onClick = () =>
+                {
+                    selectedMod = mod;
+                    renderContent();
+                }
+            });
             ui.Render(new RText()
             {
                 size = new Vector2(105, 15),
@@ -86,23 +90,37 @@ namespace FarlandsCoreMod.Scenes
                 verticalAlignment = TMPro.VerticalAlignmentOptions.Middle,
                 horizontalAlignment = TMPro.HorizontalAlignmentOptions.Center,
             });
-            CONFIG.GetConfigsBySection(mod).ToList().ForEach(renderForSection);
+
+            // CONFIG.GetConfigsBySection(mod).ToList().ForEach(renderForSection);
 
         }
         private static RVerticalGroup sectionGroup;
+        private static void renderContent()
+        {
+            ui.Point("MainMenu:Canvas/Settings/Mods");
+            
+            ui.RenderAgainAndPoint(ContentConteiner);
+            if (selectedMod != null){
+                Debug.Log(selectedMod.Info.Metadata.GUID);
+                CONFIG.GetConfigsBySection(selectedMod).ToList().ForEach(renderForSection);
+            }
 
+            else Debug.Log("NULL");
+
+
+        }
         private static void renderForSection(KeyValuePair<string, List<ConfigEntryBase>> section)
         {
             Debug.Log(section.Key);
-            ui.Point(group.gameObject);
+            ui.Point(ContentConteiner);
             sectionGroup = new RVerticalGroup
             {
                 name = $"{section.Key}-vg",
-                size = new Vector2(90, 150),
+                size = new Vector2(0.85f, 1),
                 anchoredPosition = new Vector2(0, 0),
                 spacing = 2,
                 source = "magin.fcm:UI_31",
-                color = new Color(0, 0, 0, 0.5f)
+                //color = new Color(0, 0, 0, 0.5f)
 
             };
             ui.RenderAndPoint(sectionGroup);
@@ -206,5 +224,28 @@ namespace FarlandsCoreMod.Scenes
                 });
             }
         }
+
+        private static RScrollView Sidebar = new RScrollView()
+        {
+            name = "Sidebar",
+            horizontal = false,
+            vertical = true,
+            movementType = ScrollRect.MovementType.Clamped,
+            elasticity = 0.1f,
+            inertia = true,
+            decelerationRate = 0.135f,
+            scrollSensitivity = 10f,
+            size = new Vector2(50, 100),
+            anchoredPosition = new Vector2(-50, 0),
+            source = "magin.fcm:UI_24"
+        };
+
+        private static RImage ContentConteiner = new RImage()
+        {
+            name = "ContentConteiner",
+            size = new Vector2(100, 100),
+            anchoredPosition = new Vector2(25, 0),
+            source = "magin.fcm:UI_31",
+        };
     }
 }

@@ -14,12 +14,12 @@ namespace FarlandsCoreMod.UI.Components
 
         public override Component Render()
         {
-            var gameObject = base.Render().gameObject;
+            base.Render();
+            
             Button button = gameObject.TryAddComponent<Button>();
 
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => onClick?.Invoke());
-
 
             return button;  
         }

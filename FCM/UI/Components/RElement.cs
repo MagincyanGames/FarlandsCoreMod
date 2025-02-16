@@ -49,13 +49,9 @@ namespace FarlandsCoreMod.UI.Components
        
     }
 
-    public class UIMakerElementComponent : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+    public class UIMakerElementComponent : MonoBehaviour
     {
         public RElement element;
-        public void OnPointerClick(PointerEventData eventData) { if (element != null && element.OnPointerClick != null) { element.OnPointerClick(gameObject, eventData); } }
-        public void OnPointerEnter(PointerEventData eventData) { if (element != null && element.OnPointerEnter != null) { element.OnPointerEnter(gameObject, eventData); } }
-        public void OnPointerExit(PointerEventData eventData) { if (element != null && element.OnPointerExit != null) { element.OnPointerExit(gameObject, eventData); } }
-   
         public void OnEnable() { if(element != null && element.OnEnable != null) { element.OnEnable(gameObject); }}
 
     }
