@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="FarlandsCoreMod" Version="0.2.0.6" />
+	  <PackageReference Include="FarlandsCoreMod" Version="0.2.0.9" />
 	  <PackageReference Include="UnityEngine.Modules" Version="2021.3.16" IncludeAssets="compile" />
   </ItemGroup>
   

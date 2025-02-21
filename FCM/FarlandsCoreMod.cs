@@ -22,6 +22,7 @@ using FarlandsCoreMod.Utiles;
 using CommandTerminal;
 using PixelCrushers.DialogueSystem.Articy.Articy_1_4;
 using FarlandsCoreMod.Utiles.AssetBundles;
+using FarlandsCoreMod.UI.ConfigUI;
 
 namespace FarlandsCoreMod
 {
@@ -32,6 +33,13 @@ namespace FarlandsCoreMod
         public static BepInPlugin Metadata => Instance.Info.Metadata;
         public AssetBundle ResourceBundle = AssetBundle.LoadFromFile(Paths.Plugin + "/fcm_bundle");
         public Harmony harmony = new Harmony("magin.fcm");
+        public string GUID => "magin.fcm";
+
+        public void ConfigUI(ConfigUIMaker ui)
+        {
+            ui.RenderSection("Debug");
+            ui.RenderConfig("Debug/SkipIntro");
+        }
 
         public void Awake()
         {
@@ -54,8 +62,7 @@ namespace FarlandsCoreMod
 
         private static void SkipIntro()
         {
-            if (CONFIG.Get<bool>("magin.fcm:Debug/SkipIntro"))
-                SceneManager.LoadScene("PreloadScene");
+            SceneManager.LoadScene("PreloadScene");
         }
 
         Coroutine onjandu = null;
@@ -94,13 +101,15 @@ namespace FarlandsCoreMod
 
         public List<PluginInfo> LoadedMods => UnityChainloader.Instance.Plugins.Values.Where(x => x.Metadata.GUID != Metadata.GUID).ToList();
 
-        AssetBundle IBundleLoader.ResourceBundle => throw new NotImplementedException();
 
         public BaseUnityPlugin GetPlugin(string guid) => (BaseUnityPlugin) UnityChainloader.Instance.Plugins[guid].Instance;
         public T LoadBundle<T>(string path) where T : UnityEngine.Object
         {
             return ResourceBundle.LoadAsset<T>(path);
         }
+
+        AssetBundle IBundleLoader.ResourceBundle => ResourceBundle;
+
         public Sprite LoadSprite(string path)
         {
             return ResourceBundle.LoadAsset<Sprite>(path);
@@ -118,6 +127,5 @@ namespace FarlandsCoreMod
             SceneManager.sceneLoaded += new (action);
         }
 
-        
     }
 }

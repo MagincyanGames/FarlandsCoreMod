@@ -21,13 +21,14 @@ using BepInEx.Configuration;
 using static System.Collections.Specialized.BitVector32;
 using static Unity.VisualScripting.Member;
 using System.Drawing;
+using FarlandsCoreMod.UI.ConfigUI;
 
 namespace FarlandsCoreMod.Scenes
 {
     public class MainMenuScene
     {
         private static UIMaker ui;
-        private static BaseUnityPlugin selectedMod;
+        private static IMod selectedMod;
 
         [OnLoadScene("MainMenu")]
         public static void OnLoadMainMenu()
@@ -76,7 +77,7 @@ namespace FarlandsCoreMod.Scenes
                 source = "magin.fcm:UI_31",
                 onClick = () =>
                 {
-                    selectedMod = mod;
+                    selectedMod = (IMod)mod;
                     renderContent();
                 }
             });
@@ -101,8 +102,11 @@ namespace FarlandsCoreMod.Scenes
             
             ui.RenderAgainAndPoint(ContentConteiner);
             if (selectedMod != null){
-                Debug.Log(selectedMod.Info.Metadata.GUID);
-                CONFIG.GetConfigsBySection(selectedMod).ToList().ForEach(renderForSection);
+                Debug.Log(selectedMod.GUID);
+                ConfigUIMaker configUI = new(selectedMod, ContentConteiner.SubPoint());
+                selectedMod.ConfigUI(configUI);
+                // CONFIG.GetConfigsBySection(selectedMod).ToList().ForEach(renderForSection);
+
             }
 
             else Debug.Log("NULL");
@@ -240,9 +244,16 @@ namespace FarlandsCoreMod.Scenes
             source = "magin.fcm:UI_24"
         };
 
-        private static RImage ContentConteiner = new RImage()
+        private static RScrollView ContentConteiner = new RScrollView()
         {
             name = "ContentConteiner",
+            horizontal = false,
+            vertical = true,
+            movementType = ScrollRect.MovementType.Clamped,
+            elasticity = 0.1f,
+            inertia = true,
+            decelerationRate = 0.135f,
+            scrollSensitivity = 10f,
             size = new Vector2(100, 100),
             anchoredPosition = new Vector2(25, 0),
             source = "magin.fcm:UI_31",

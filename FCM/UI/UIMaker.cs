@@ -27,25 +27,25 @@ namespace FarlandsCoreMod.UI
             this.point = point.transform;
             return this;
         }
-        public UIMaker Render(RElement element)
+        public virtual UIMaker Render(RElement element)
         {
             var render = element.RenderElement(point);
             return this;
         }
-        public UIMaker RenderAndPoint(RElement element)
+        public virtual UIMaker RenderAndPoint(RElement element)
         {
             var render = element.RenderElement(point);
             this.point = element.SubPoint();
             return this;
         }
-        public UIMaker RenderAgainAndPoint(RElement element)
+        public virtual UIMaker RenderAgainAndPoint(RElement element)
         {
             var render = RenderAgain(element);
             this.point = element.SubPoint();
 
             return this;
         }
-        public UIMaker RenderAgain(RElement element)
+        public virtual UIMaker RenderAgain(RElement element)
         {
             GameObject.DestroyImmediate(element.gameObject);
             Render(element);
