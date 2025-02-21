@@ -25,42 +25,63 @@ namespace FarlandsCoreMod.UI.Components
             // Añadir el componente TMP_InputField
             TMP_InputField inputField = gameObject.AddComponent<TMP_InputField>();
             inputField.targetGraphic = gameObject.GetComponent<Image>();
-            // Añadir el componente de texto (TextMeshPro) al InputField
             GameObject textGO = new GameObject("Text");
             textGO.transform.SetParent(gameObject.transform);
-            textGO.transform.localScale = new Vector3(1, 1, 1);
-            textGO.TryAddComponent<RectTransform>().sizeDelta = size.Value;
+            textGO.transform.localScale = Vector3.one;
+
+            RectTransform textRect = textGO.AddComponent<RectTransform>();
+            textRect.sizeDelta = size.Value;
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = Vector2.zero;
+            textRect.offsetMax = Vector2.zero;
 
             TextMeshProUGUI tmpro = textGO.AddComponent<TextMeshProUGUI>();
-
-            // Configurar el componente TextMeshProUGUI
-            tmpro.alignment = TextAlignmentOptions.Center;  // Centrar el texto (opcional)
-            tmpro.text = "Escribe algo...";  // Texto inicial (opcional)
-            tmpro.fontSize = fontSize.Value;
-            // Asignar el componente de texto al TMP_InputField
+            tmpro.alignment = TextAlignmentOptions.MidlineLeft;  // Alinear a la izquierda para mejor visibilidad del cursor
+            tmpro.text = text ?? ""; // Establecer texto inicial
+            tmpro.fontSize = fontSize ?? 14f;
             tmpro.color = Color.black;
+
+            // Asignar el componente de texto al TMP_InputField
             inputField.textComponent = tmpro;
 
-            // Crear el componente de placeholder para el TMP_InputField
+            // Crear y configurar el placeholder para el InputField
             GameObject placeholderGO = new GameObject("Placeholder");
             placeholderGO.transform.SetParent(gameObject.transform);
-            placeholderGO.transform.localScale = new Vector3(1, 1, 1);
-            placeholderGO.TryAddComponent<RectTransform>().sizeDelta = size.Value;
-            TextMeshProUGUI placeholder = placeholderGO.AddComponent<TextMeshProUGUI>();
+            placeholderGO.transform.localScale = Vector3.one;
 
-            placeholder.fontSize = fontSize.Value;
-            placeholder.alignment = TextAlignmentOptions.Center; 
-            placeholder.text = "Placeholder";  // Texto del placeholder
-            placeholder.color = new Color(0.6f, 0.6f, 0.6f);  // Color gris (opcional)
-            inputField.placeholder = placeholder;
+            RectTransform placeholderRect = placeholderGO.AddComponent<RectTransform>();
+            placeholderRect.sizeDelta = size.Value;
+            placeholderRect.anchorMin = Vector2.zero;
+            placeholderRect.anchorMax = Vector2.one;
+            placeholderRect.offsetMin = Vector2.zero;
+            placeholderRect.offsetMax = Vector2.zero;
+
+            TextMeshProUGUI placeholderText = placeholderGO.AddComponent<TextMeshProUGUI>();
+            placeholderText.alignment = TextAlignmentOptions.MidlineLeft;
+            placeholderText.text = placeholder;
+            placeholderText.fontSize = fontSize ?? 14f;
+            placeholderText.color = placeholderColor ?? new Color(0.6f, 0.6f, 0.6f);
+
+            // Asignar placeholder al InputField
+            inputField.placeholder = placeholderText;
+
+            // Habilitar el Caret
+            inputField.caretBlinkRate = 0.85f;
+            inputField.caretWidth = 2;
 
             // Configurar el InputField
-            inputField.characterLimit = 20;  // Limitar el número de caracteres (opcional)
-            inputField.lineType = TMP_InputField.LineType.SingleLine;  // Solo una línea (opcional
+            inputField.characterLimit = characterLimit ?? 20;
+            inputField.lineType = lineType ?? TMP_InputField.LineType.SingleLine;
+            inputField.onEndEdit.AddListener(value => onEndEdit?.Invoke(value));
 
-            inputField.onEndEdit.AddListener((string value) => onEndEdit?.Invoke(value));  // Evento de cambio de valor
+            inputField.selectionColor = Color.gray; // Asegúrate de que el color de selección no sea igual al fondo.
+            inputField.caretColor = Color.black; // Asegúrate de que el color del cursor sea visible.
+            inputField.enabled = false;
+            inputField.enabled = true;
 
-            if (contentType.HasValue) inputField.contentType = contentType.Value;  // Tipo de contenido (opcional)
+
+            if (contentType.HasValue) inputField.contentType = contentType.Value;
             if (text != null) inputField.text = text;
             return gameObject.GetComponent<RectTransform>();
         }
