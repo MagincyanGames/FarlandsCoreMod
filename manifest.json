@@ -1,0 +1,10 @@
+{
+  "Name": "FarlandsCoreMod",
+  "Type": 1,
+  "GUID": "fm.fcm",
+  "Versions": [
+    "0.0.2"
+  ],
+  "url": "https://github.com/FarlandsModdingTeam/FarlandsCoreMod",
+  "Dependencies": []
+}
